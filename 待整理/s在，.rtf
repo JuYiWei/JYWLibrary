@@ -1,0 +1,235 @@
+{\rtf1\ansi\ansicpg936\cocoartf1404\cocoasubrtf340
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset134 PingFangSC-Regular;\f2\fnil\fcharset0 Verdana;
+}
+{\colortbl;\red255\green255\blue255;\red29\green133\blue25;\red38\green38\blue38;\red92\green38\blue153;
+\red77\green0\blue158;\red180\green0\blue98;\red110\green32\blue13;\red186\green0\blue17;\red100\green56\blue32;
+\red0\green11\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww16680\viewh10240\viewkind0
+\deftab674
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+
+\f0\fs28 \cf2 \CocoaLigature0 runtime\
+http://my.oschina.net/panyong/blog/297640\
+http://my.oschina.net/panyong/blog/297640\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs26 \cf3 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \'c5\'a3\'b1\'c6 3ge
+\f2   \
+http://blog.csdn.net/lengshengren/article/details/17764135\
+
+\f0\fs28 \cf2 \CocoaLigature0 http://www.cnblogs.com/guoxiao/p/3583351.html?utm_source=tuicool&utm_medium=referral\kerning1\expnd0\expndtw0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 http://southpeak.github.io/blog/2014/10/25/objective-c-runtime-yun-xing-shi-zhi-lei-yu-dui-xiang/\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf0 - (\cf4 CGFloat\cf0 )tableView:(\cf5 UITableView\cf0  *)tableView heightForRowAtIndexPath:(\cf5 NSIndexPath\cf0  *)indexPath;\
+- (\cf6 void\cf0 )tableView:(\cf5 UITableView\cf0  *)tableView didSelectRowAtIndexPath:(\cf5 NSIndexPath\cf0  *)indexPath;\
+- (\cf4 NSInteger\cf0 )tableView:(\cf5 UITableView\cf0  *)tableView numberOfRowsInSection:(\cf4 NSInteger\cf0 )section;\
+- (\cf6 void\cf0 )tableView:(\cf5 UITableView\cf0  *)tableView moveRowAtIndexPath:(\cf5 NSIndexPath\cf0  *)sourceIndexPath toIndexPath:(\cf5 NSIndexPath\cf0  *)destinationIndexPath;\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 \
+\
+================\
+\
+/*\
+	NSKeyValueObserving.h\
+	Copyright (c) 2003-2015, Apple Inc.\
+	All rights reserved.\
+*/\
+\
+http://www.cnblogs.com/wengzilin/p/4346775.html\
+http://www.androiddev.net/kvo/\
+http://blog.csdn.net/sakulafly/article/details/14084183\cf0 \
+http://www.jianshu.com/p/742b4b248da9\
+http://www.tuicool.com/articles/mUVJVb\
+\
+\
+\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf7 #import \cf8 <Foundation/NSArray.h>\cf7 \
+#import \cf8 <Foundation/NSOrderedSet.h>\cf7 \
+#import \cf8 <Foundation/NSSet.h>\cf7 \
+#import \cf8 <Foundation/NSDictionary.h>\cf7 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf0 \
+\cf6 @class\cf0  \cf5 NSIndexSet\cf0 , \cf5 NSString\cf0 ;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf9 NS_ASSUME_NONNULL_BEGIN\cf0 \
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2  \cf0 \
+\cf2 /* Possible values in the NSKeyValueChangeKindKey entry in change dictionaries. See the comments for -observeValueForKeyPath:ofObject:change:context: for more information.\
+*/\cf0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 typedef\cf0  \cf6 NS_ENUM\cf0 (NSUInteger, NSKeyValueChange) \{\
+    NSKeyValueChangeSetting = \cf10 1\cf0 ,\
+    NSKeyValueChangeInsertion = \cf10 2\cf0 ,\
+    NSKeyValueChangeRemoval = \cf10 3\cf0 ,\
+    NSKeyValueChangeReplacement = \cf10 4\cf0 ,\
+\};\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* Possible kinds of set mutation for use with -willChangeValueForKey:withSetMutation:usingObjects: and -didChangeValueForKey:withSetMutation:usingObjects:. Their semantics correspond exactly to NSMutableSet's -unionSet:, -minusSet:, -intersectSet:, and -setSet: method, respectively.\
+*/\cf0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 typedef\cf0  \cf6 NS_ENUM\cf0 (NSUInteger, NSKeyValueSetMutationKind) \{\
+    NSKeyValueUnionSetMutation = \cf10 1\cf0 ,\
+    NSKeyValueMinusSetMutation = \cf10 2\cf0 ,\
+    NSKeyValueIntersectSetMutation = \cf10 3\cf0 ,\
+    NSKeyValueSetSetMutation = \cf10 4\cf0 \
+\};\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* Keys for entries in change dictionaries. See the comments for -observeValueForKeyPath:ofObject:change:context: for more information.\
+*/\cf0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf9 FOUNDATION_EXPORT\cf0  \cf5 NSString\cf0  *\cf6 const\cf0  NSKeyValueChangeKindKey;\
+\cf9 FOUNDATION_EXPORT\cf0  \cf5 NSString\cf0  *\cf6 const\cf0  NSKeyValueChangeNewKey;\
+\cf9 FOUNDATION_EXPORT\cf0  \cf5 NSString\cf0  *\cf6 const\cf0  NSKeyValueChangeOldKey;\
+\cf9 FOUNDATION_EXPORT\cf0  \cf5 NSString\cf0  *\cf6 const\cf0  NSKeyValueChangeIndexesKey;\
+\cf9 FOUNDATION_EXPORT\cf0  \cf5 NSString\cf0  *\cf6 const\cf0  NSKeyValueChangeNotificationIsPriorKey \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _5, \cf10 2\cf0 _0);\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6  \cf0 \
+\
+\
+\cf6 @interface\cf0  \cf5 NSArray\cf0 <ObjectType>(NSKeyValueObserverRegistration)\
+\
+- (\cf6 void\cf0 )addObserver:(\cf5 NSObject\cf0  *)observer toObjectsAtIndexes:(\cf5 NSIndexSet\cf0  *)indexes forKeyPath:(\cf5 NSString\cf0  *)keyPath options:(\cf4 NSKeyValueObservingOptions\cf0 )options context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context;\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer fromObjectsAtIndexes:(\cf5 NSIndexSet\cf0  *)indexes forKeyPath:(\cf5 NSString\cf0  *)keyPath context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _7, \cf10 5\cf0 _0);\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer fromObjectsAtIndexes:(\cf5 NSIndexSet\cf0  *)indexes forKeyPath:(\cf5 NSString\cf0  *)keyPath;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* NSArrays are not observable, so these methods raise exceptions when invoked on NSArrays. Instead of observing an array, observe the ordered to-many relationship for which the array is the collection of related objects.\
+*/\cf0 \
+- (\cf6 void\cf0 )addObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath options:(\cf4 NSKeyValueObservingOptions\cf0 )options context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context;\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _7, \cf10 5\cf0 _0);\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @end\cf0 \
+\
+\
+\
+\
+\
+\
+\cf6 @interface\cf0  \cf5 NSOrderedSet\cf0 <ObjectType>(NSKeyValueObserverRegistration)\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* NSOrderedSets are not observable, so these methods raise exceptions when invoked on NSOrderedSets. Instead of observing an ordered set, observe the ordered to-many relationship for which the ordered set is the collection of related objects.\
+*/\cf0 \
+- (\cf6 void\cf0 )addObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath options:(\cf4 NSKeyValueObservingOptions\cf0 )options context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context;\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _7, \cf10 5\cf0 _0);\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @end\cf0 \
+\
+\
+\
+\
+\cf6 @interface\cf0  \cf5 NSSet\cf0 <ObjectType>(NSKeyValueObserverRegistration)\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* NSSets are not observable, so these methods raise exceptions when invoked on NSSets. Instead of observing a set, observe the unordered to-many relationship for which the set is the collection of related objects.\
+*/\cf0 \
+- (\cf6 void\cf0 )addObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath options:(\cf4 NSKeyValueObservingOptions\cf0 )options context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context;\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath context:(\cf6 nullable\cf0  \cf6 void\cf0  *)context \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _7, \cf10 5\cf0 _0);\
+- (\cf6 void\cf0 )removeObserver:(\cf5 NSObject\cf0  *)observer forKeyPath:(\cf5 NSString\cf0  *)keyPath;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @end\cf0 \
+\
+\
+\
+\
+\cf6 @interface\cf0  NSObject(NSKeyValueObserverNotification)\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* Given a key that identifies a property (attribute, to-one relationship, or ordered or unordered to-many relationship), send -observeValueForKeyPath:ofObject:change:context: notification messages of kind NSKeyValueChangeSetting to each observer registered for the key, including those that are registered with other objects using key paths that locate the keyed value in this object. Invocations of these methods must always be paired.\
+\
+The change dictionaries in notifications resulting from use of these methods contain optional entries if requested at observer registration time:\
+    - The NSKeyValueChangeOldKey entry, if present, contains the value returned by -valueForKey: at the instant that -willChangeValueForKey: is invoked (or an NSNull if -valueForKey: returns nil).\
+    - The NSKeyValueChangeNewKey entry, if present, contains the value returned by -valueForKey: at the instant that -didChangeValueForKey: is invoked (or an NSNull if -valueForKey: returns nil).\
+*/\cf0 \
+- (\cf6 void\cf0 )willChangeValueForKey:(\cf5 NSString\cf0  *)key;\
+- (\cf6 void\cf0 )didChangeValueForKey:(\cf5 NSString\cf0  *)key;\
+\
+\cf2 /* Given a key that identifies an _ordered_ to-many relationship, send -observeValueForKeyPath:ofObject:change:context: notification messages of the passed-in change kind to each observer registered for the key, including those that are registered with other objects using key paths that locate the keyed value in this object. The passed-in kind must be NSKeyValueChangeInsertion, NSKeyValueChangeRemoval, or NSKeyValueChangeReplacement. The passed-in index set must be the indexes of the objects being inserted, removed, or replaced. Invocations of these methods must always be paired, with identical arguments.\
+\
+The change dictionaries in notifications resulting from use of these methods contain optional entries if requested at observer registration time:\
+    - The NSKeyValueChangeOldKey entry, if present (only for NSKeyValueChangeRemoval and NSKeyValueChangeReplacement), contains an array of the indexed objects from the array returned by -valueForKey: at the instant that -willChangeValueForKey:valuesAtIndexes:forKey: is invoked.\
+    - The NSKeyValueChangeNewKey entry, if present (only for NSKeyValueChangeInsertion and NSKeyValueChangeReplacement), contains an array of the indexed objects from the array returned by -valueForKey: at the instant that -didChangeValueForKey:valuesAtIndexes:forKey: is invoked.\
+*/\cf0 \
+- (\cf6 void\cf0 )willChange:(\cf4 NSKeyValueChange\cf0 )changeKind valuesAtIndexes:(\cf5 NSIndexSet\cf0  *)indexes forKey:(\cf5 NSString\cf0  *)key;\
+- (\cf6 void\cf0 )didChange:(\cf4 NSKeyValueChange\cf0 )changeKind valuesAtIndexes:(\cf5 NSIndexSet\cf0  *)indexes forKey:(\cf5 NSString\cf0  *)key;\
+\
+\cf2 /* Given a key that identifies an _unordered_ to-many relationship, send -observeValueForKeyPath:ofObject:change:context: notification messages to each observer registered for the key, including those that are registered with other objects using key paths that locate the keyed value in this object. The passed-in mutation kind corresponds to an NSMutableSet method. The passed-in set must contain the set that would be passed to the corresponding NSMutableSet method. Invocations of these methods must always be paired, with identical arguments.\
+\
+The value of the NSKeyValueChangeKindKey entry in change dictionaries in notifications resulting from use of these methods depends on the passed-in mutationKind value:\
+    - NSKeyValueUnionSetMutation -> NSKeyValueChangeInsertion\
+    - NSKeyValueMinusSetMutation -> NSKeyValueChangeRemoval\
+    - NSKeyValueIntersectSetMutation -> NSKeyValueChangeRemoval\
+    - NSKeyValueSetSetMutation -> NSKeyValueChangeReplacement\
+\
+The change dictionaries may also contain optional entries:\
+    - The NSKeyValueChangeOldKey entry, if present (only for for NSKeyValueChangeRemoval and NSKeyValueChangeReplacement), contains the set of objects that were removed.\
+    - The NSKeyValueChangeNewKey entry, if present (only for NSKeyValueChangeInsertion and NSKeyValueChangeReplacement), contains the set of objects that were added.\
+*/\cf0 \
+- (\cf6 void\cf0 )willChangeValueForKey:(\cf5 NSString\cf0  *)key withSetMutation:(\cf4 NSKeyValueSetMutationKind\cf0 )mutationKind usingObjects:(\cf5 NSSet\cf0  *)objects;\
+- (\cf6 void\cf0 )didChangeValueForKey:(\cf5 NSString\cf0  *)key withSetMutation:(\cf4 NSKeyValueSetMutationKind\cf0 )mutationKind usingObjects:(\cf5 NSSet\cf0  *)objects;\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @end\cf0 \
+\
+\cf6 @interface\cf0  NSObject(NSKeyValueObservingCustomization)\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* Return a set of key paths for properties whose values affect the value of the keyed property. When an observer for the key is registered with an instance of the receiving class, KVO itself automatically observes all of the key paths for the same instance, and sends change notifications for the key to the observer when the value for any of those key paths changes. The default implementation of this method searches the receiving class for a method whose name matches the pattern +keyPathsForValuesAffecting<Key>, and returns the result of invoking that method if it is found. So, any such method must return an NSSet too. If no such method is found, an NSSet that is computed from information provided by previous invocations of the now-deprecated +setKeys:triggerChangeNotificationsForDependentKey: method is returned, for backward binary compatibility.\
+\
+This method and KVO's automatic use of it comprise a dependency mechanism that you can use instead of sending -willChangeValueForKey:/-didChangeValueForKey: messages for dependent, computed, properties.\
+ \
+You can override this method when the getter method of one of your properties computes a value to return using the values of other properties, including those that are located by key paths. Your override should typically invoke super and return a set that includes any members in the set that result from doing that (so as not to interfere with overrides of this method in superclasses).\
+\
+You can't really override this method when you add a computed property to an existing class using a category, because you're not supposed to override methods in categories. In that case, implement a matching +keyPathsForValuesAffecting<Key> to take advantage of this mechanism.\
+*/\cf0 \
++ (\cf5 NSSet\cf0 <\cf5 NSString\cf0  *> *)keyPathsForValuesAffectingValueForKey:(\cf5 NSString\cf0  *)key \cf9 NS_AVAILABLE\cf0 (\cf10 10\cf0 _5, \cf10 2\cf0 _0);\
+\
+\cf2 /* Return YES if the key-value observing machinery should automatically invoke -willChangeValueForKey:/-didChangeValueForKey:, -willChange:valuesAtIndexes:forKey:/-didChange:valuesAtIndexes:forKey:, or -willChangeValueForKey:withSetMutation:usingObjects:/-didChangeValueForKey:withSetMutation:usingObjects: whenever instances of the class receive key-value coding messages for the key, or mutating key-value coding-compliant methods for the key are invoked. Return NO otherwise. Starting in Mac OS 10.5, the default implementation of this method searches the receiving class for a method whose name matches the pattern +automaticallyNotifiesObserversOf<Key>, and returns the result of invoking that method if it is found. So, any such method must return BOOL too. If no such method is found YES is returned.\
+*/\cf0 \
++ (\cf6 BOOL\cf0 )automaticallyNotifiesObserversForKey:(\cf5 NSString\cf0  *)key;\
+\
+\cf2 /* Take or return a pointer that identifies information about all of the observers that are registered with the receiver, the options that were used at registration-time, etc. The default implementation of these methods store observation info in a global dictionary keyed by the receivers' pointers. For improved performance, you can override these methods to store the opaque data pointer in an instance variable. Overrides of these methods must not attempt to send Objective-C messages to the passed-in observation info, including -retain and -release.\
+*/\cf0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @property\cf0  (\cf6 nullable\cf0 ) \cf6 void\cf0  *observationInfo \cf9 NS_RETURNS_INNER_POINTER\cf0 ;\
+\
+\cf6 @end\cf0 \
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf7 #if (TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_IPHONE))\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf0 \
+\cf6 @interface\cf0  NSObject(NSDeprecatedKeyValueObservingCustomization)\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf2 /* A method that was deprecated in Mac OS 10.5, in favor of using +keyPathsForValuesAffectingValueForKey:. Registers the fact that invocations of -willChangeValueForKey:/-didChangeValueForKey:, -willChange:valuesAtIndexes:forKey:/-didChange:valuesAtIndexes:forKey:, and -willChangeValueForKey:withSetMutation:usingObjects:/-didChangeValueForKey:withSetMutation:usingObjects: for any key in the passed-in array should also send notifications for the dependent key.\
+*/\cf0 \
++ (\cf6 void\cf0 )setKeys:(NSArray *)keys triggerChangeNotificationsForDependentKey:(NSString *)dependentKey NS_DEPRECATED(\cf10 10\cf0 _0, \cf10 10\cf0 _5, \cf10 2\cf0 _0, \cf10 2\cf0 _0);\
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf6 @end\cf0  \
+\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf7 #endif\
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx674\pardeftab674\pardirnatural\partightenfactor0
+\cf9 NS_ASSUME_NONNULL_END\cf0 \
+}

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<!-- saved from url=(0080)http://wonderffee.github.io/blog/2013/10/13/understand-anchorpoint-and-position/ -->
+<html class="js video maskImage placeholder" lang="en"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/" charset="utf-8" id="uyan_script"></script><script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/style4.js" charset="utf-8" id="uyan_script"></script><script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/saved_resource" charset="utf-8" id="uyan_script"></script>
+  <meta charset="utf-8">
+  <title>彻底理解position与anchorPoint - Wonderffee's Blog</title>
+  <meta name="author" content="wonderffee">
+
+  
+  <meta name="description" content="引言 相信初接触到CALayer的人都会遇到以下几个问题： 为什么修改anchorPoint会移动layer的位置？
+CALayer的position点是哪一点呢?
+anchorPoint与position有什么关系？ 我也迷惑过，找过网上的教程，大部分都是复制粘贴的，有些是翻译的文章但很有问题， …">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+
+  
+  <link rel="canonical" href="http://wonderffee.github.io/blog/2013/10/13/understand-anchorpoint-and-position">
+  <link href="http://wonderffee.github.io/favicon.png" rel="icon">
+  <link href="./彻底理解position与anchorPoint - Wonderffee's Blog_files/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="http://wonderffee.github.io/atom.xml" rel="alternate" title="Wonderffee&#39;s Blog" type="application/atom+xml">
+  <script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/modernizr-2.0.js"></script><style type="text/css" adt="123"></style>
+  <script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="./彻底理解position与anchorPoint - Wonderffee's Blog_files/css" rel="stylesheet" type="text/css">
+<link href="./彻底理解position与anchorPoint - Wonderffee's Blog_files/css(1)" rel="stylesheet" type="text/css">
+
+  
+
+<script>if(!document.URL.match(/^http:\/\/v\.baidu\.com|http:\/\/music\.baidu\.com|http:\/\/dnf\.duowan\.com|http:\/\/bbs\.duowan\.com|http:\/\/newgame\.duowan\.com|http:\/\/my\.tv\.sohu\.com/)){
+(function() {
+    Function.prototype.bind = function() {
+        var fn = this, args = Array.prototype.slice.call(arguments), obj = args.shift();
+        return function() {
+            return fn.apply(obj, args.concat(Array.prototype.slice.call(arguments)));
+        };
+    };
+    function A() {}
+    A.prototype = {
+        rules: {
+            /*'youku_loader': {
+                'find': /^http:\/\/static\.youku\.com\/.*(loader|player_.*)(_taobao)?\.swf/,
+                'replace': 'http://swf.adtchrome.com/loader.swf'
+            },
+            'youku_out': {
+                'find': /^http:\/\/player\.youku\.com\/player\.php\/.*sid\/(.*)/,
+                'replace': 'http://swf.adtchrome.com/loader.swf?VideoIDS=$1'
+            },*/
+            'pps_pps': {
+                'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/pps_flvplay_s\.swf/,
+                'replace': 'http://swf.adtchrome.com/pps_20140420.swf'
+            },
+            /*'iqiyi_1': {
+                'find': /^http:\/\/www\.iqiyi\.com\/player\/cupid\/common\/.+\.swf$/,
+                'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+            },
+            'iqiyi_2': {
+                'find': /^http:\/\/www\.iqiyi\.com\/common\/flashplayer\/\d+\/.+\.swf$/,
+                'replace': 'http://swf.adtchrome.com/iqiyi_20140624.swf'
+            },*/
+            'ku6': {
+                'find': /^http:\/\/player\.ku6cdn\.com\/default\/.*\/\d+\/(v|player|loader)\.swf/,
+                'replace': 'http://swf.adtchrome.com/ku6_20140420.swf'
+            },
+            'ku6_topic': {
+                'find': /^http:\/\/player\.ku6\.com\/inside\/(.*)\/v\.swf/,
+                'replace': 'http://swf.adtchrome.com/ku6_20140420.swf?vid=$1'
+            },
+            'sohu': {
+                'find': /^http:\/\/tv\.sohu\.com\/upload\/swf(\/p2p)?\/\d+\/Main\.swf/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf'
+            },
+            'sohu2':{
+                'find':/^http:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/testplayer\/Main0?\.swf/,
+                'replace':'http://www.adtchrome.com/sohu/sohu_20150104.swf'
+            },
+            'sohu_share': {
+                'find': /^http:\/\/share\.vrs\.sohu\.com\/my\/v\.swf&/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?'
+            },
+            'sohu_sogou' : {
+                'find': /^http:\/\/share\.vrs\.sohu\.com\/(\d+)\/v\.swf/,
+                'replace': 'http://www.adtchrome.com/sohu/sohu_20150104.swf?vid=$1'
+            },
+            /*'letv': {
+                'find': /^http:\/\/player\.letvcdn\.com\/.*p\/.*\/newplayer\/LetvPlayer\.swf/,
+                'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+            },
+            'letv_topic': {
+                'find': /^http:\/\/player\.hz\.letv\.com\/hzplayer\.swf\/v_list=zhuanti/,
+                'replace': 'http://swf.adtchrome.com/20150110_letv.swf'
+            },
+            'letv_duowan': {
+                'find': /^http:\/\/assets\.dwstatic\.com\/video\/vpp\.swf/,
+                'replace': 'http://yuntv.letv.com/bcloud.swf'
+            },*/
+            '17173_in':{
+                'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+            },
+            '17173_out':{
+                'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+            },
+            '17173_live':{
+                'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+            },
+            '17173_live_out':{
+                'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+            }
+        },
+        _done: null,
+        get done() {
+            if(!this._done) {
+                this._done = new Array();
+            }
+            return this._done;
+        },
+        addAnimations: function() {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+            document.getElementsByTagName('head')[0].appendChild(style);
+        },
+        animationsHandler: function(e) {
+            if(e.animationName === 'playerInserted') {
+                this.replace(e.target);
+            }
+        },
+        replace: function(elem) {
+            if(this.done.indexOf(elem) != -1) return;
+            this.done.push(elem);
+            var player = elem.data || elem.src;
+            if(!player) return;
+            var i, find, replace = false;
+            for(i in this.rules) {
+                find = this.rules[i]['find'];
+                if(find.test(player)) {
+                    replace = this.rules[i]['replace'];
+                    if('function' === typeof this.rules[i]['preHandle']) {
+                        this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                    }else{
+                        this.reallyReplace.bind(this, elem, find, replace)();
+                    }
+                    break;
+                }
+            }
+        },
+        reallyReplace: function(elem, find, replace) {
+            elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+            var b = elem.querySelector("param[name='movie']");
+            this.reloadPlugin(elem);
+        },
+        reloadPlugin: function(elem) {
+            var nextSibling = elem.nextSibling;
+            var parentNode = elem.parentNode;
+            parentNode.removeChild(elem);
+            var newElem = elem.cloneNode(true);
+            this.done.push(newElem);
+            if(nextSibling) {
+                parentNode.insertBefore(newElem, nextSibling);
+            } else {
+                parentNode.appendChild(newElem);
+            }
+        },
+        init: function() {
+            var desc = navigator.mimeTypes['application/x-shockwave-flash'].description.toLowerCase();
+            /*if(desc.indexOf('adobe')>-1){
+                delete this.rules["iqiyi_1"];
+                delete this.rules["iqiyi_2"];
+            }*/
+            if(document.URL.indexOf('tv.sohu.com')<=0){
+                delete this.rules["sohu"];
+            }
+            var handler = this.animationsHandler.bind(this);
+            document.body.addEventListener('webkitAnimationStart', handler, false);
+            document.body.addEventListener('msAnimationStart', handler, false);
+            document.body.addEventListener('oAnimationStart', handler, false);
+            document.body.addEventListener('animationstart', handler, false);
+            this.addAnimations();
+        }
+    };
+    new A().init();
+})();
+}
+// 20140730
+(function cnbeta() {
+    if (document.URL.indexOf('cnbeta.com') >= 0) {
+        var elms = document.body.querySelectorAll("p>embed");
+        Array.prototype.forEach.call(elms, function(elm) {
+            elm.style.marginLeft = "0px";
+        });
+    }
+})();
+// 20150108
+setTimeout(function(){
+    if (document.URL.indexOf('www.baidu.com') >= 0) {
+        var a = function(){
+            Array.prototype.forEach.call(document.body.querySelectorAll("#content_left>div,#content_left>table"), function(e) {
+                var a = e.getAttribute("style");
+                if(a && /display:(table|block)\s!important/.test(a)){
+                    e.removeAttribute("style")
+                }
+            });
+        };
+        a();
+        document.getElementById("su").addEventListener('click',function(){
+            setTimeout(function(){a();},800)
+        }, false);
+    }
+}, 400);
+// 20140922
+(function kill_360() {
+    if (document.URL.indexOf('so.com') >= 0) {
+        document.getElementById("e_idea_pp").style.display = none;
+    }
+})();
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style><style type="text/css">#uyan_cmt_box{width: 100% !important;}#uyan_star{display: none !important;}#uyan_cmty_btn{display: block !important;}#uyan_login_btn{display: block !important;}#uyan_usp{display: none !important;}#uyan_ottype{display: none !important;}.uyan_st_slog{right: 162px !important;}#uyan_ddword{display: none !important;}#uyan_info_sync{display: none !important;}</style></head>
+
+<body>
+  <header role="banner"><hgroup>
+  <h1><a href="http://wonderffee.github.io/">Wonderffee's Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="http://wonderffee.github.io/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:wonderffee.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search">
+  </fieldset>
+</form>
+  
+<fieldset class="mobile-nav"><select><option value="">Navigate…</option><option value="http://wonderffee.github.io/">» Blog</option><option value="http://wonderffee.github.io/blog/archives">» Archives</option><option value="http://wonderffee.github.io/atom.xml">» RSS</option></select></fieldset><ul class="main-navigation">
+  <li><a href="http://wonderffee.github.io/">Blog</a></li>
+  <li><a href="http://wonderffee.github.io/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">彻底理解position与anchorPoint</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-13T11:10:00+08:00" pubdate="" data-updated="true">Oct 13<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3>引言</h3>
+
+<p>相信初接触到CALayer的人都会遇到以下几个问题： <br>
+为什么修改anchorPoint会移动layer的位置？<br>
+CALayer的position点是哪一点呢?<br>
+anchorPoint与position有什么关系？</p>
+
+<!--more-->
+
+
+<p>我也迷惑过，找过网上的教程，大部分都是复制粘贴的，有些是翻译的文章但很有问题，看得似懂非懂，还是自己写代码彻底弄懂了，做点笔记吧。</p>
+
+<p>每一个UIView内部都默认关联着一个CALayer, UIView有frame、bounds和center三个属性，CALayer也有类似的属性，分别为frame、bounds、position、anchorPoint。frame和bounds比较好理解，bounds可以视为x坐标和y坐标都为0的frame，那position、anchorPoint是什么呢？先看看两者的原型，可知都是CGPoint点。</p>
+
+<p>@property CGPoint position<br>
+@property CGPoint anchorPoint</p>
+
+<h3>anchorPoint</h3>
+
+<p>一般都是先介绍position，再介绍anchorPoint。我这里反过来，先来说说anchorPoint。</p>
+
+<p>从一个例子开始入手吧，想象一下，把一张A4白纸用图钉订在书桌上，如果订得不是很紧的话，白纸就可以沿顺时针或逆时针方向围绕图钉旋转，这时候图钉就起着支点的作用。我们要解释的anchorPoint就相当于白纸上的图钉，它主要的作用就是用来作为变换的支点，旋转就是一种变换，类似的还有平移、缩放。</p>
+
+<p>继续扩展，很明显，白纸的旋转形态随图钉的位置不同而不同，图钉订在白纸的正中间与左上角时分别造就了两种旋转形态，这是由图钉（anchorPoint）的位置决定的。如何衡量图钉（anchorPoint）在白纸中的位置呢？在iOS中，anchorPoint点的值是用一种相对bounds的比例值来确定的，在白纸的左上角、右下角，anchorPoint分为为(0,0), (1, 1)，也就是说anchorPoint是在单元坐标空间(同时也是左手坐标系)中定义的。类似地，可以得出在白纸的中心点、左下角和右上角的anchorPoint为(0.5,0.5), (0,1), (1,0)。</p>
+
+<p>然后再来看下面两张图，注意图中分iOS与MacOS，因为两者的坐标系不相同，iOS使用左手坐标系，坐标原点在左上角，MacOS使用右手坐标系，原点在左下角，我们看iOS部分即可。
+<img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/layer_coords_anchorpoint_position_2x.png" title="Optional title" alt="test">  <br>
+图1</p>
+
+<p><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/anchorpoint2.jpg" title="Optional title" alt="test">  <br>
+图2</p>
+
+<p>像UIView有superView与subView的概念一样，CALayer也有superLayer与layer的概念，前面说到的白纸和图中的矩形可以理解为layer，书桌和图中矩形以外的坐标系可以理解成superLayer。如果各自以左上角为原点，则在图中有相对的两个坐标空间。</p>
+
+<h3>position</h3>
+
+<p>在图1中，anchorPoint有(0.5,0.5)和(0,0)两种情况，分别为矩形的中心点与原点。那么，这两个anchorPoint在superLayer中的实际位置分别为多少呢？简单计算一下就可以得到(100, 100)和(40, 60)，把这两个值分别与各自的position值比较，发现完全一致，该不会是巧合？</p>
+
+<p>这时候可以大胆猜测一下，position是不是就是anchorPoint在superLayer中的位置呢？答案是确定的，更确切地说，position是layer中的anchorPoint点在superLayer中的位置坐标。因此可以说, position点是相对suerLayer的，anchorPoint点是相对layer的，两者是相对不同的坐标空间的一个重合点。</p>
+
+<p>再来看看position的原始定义：
+The layer’s position in its superlayer’s coordinate space。<br>
+中文可以理解成为position是layer相对superLayer坐标空间的位置，很显然，这里的位置是根据anchorPoint来确定的。</p>
+
+<p>图2中是矩形沿不同的anchorPoint点旋转的形态，这就是类似于刚才讲的图钉订在白纸的正中间与左上角时分别造就了两种旋转形态。</p>
+
+<h3>anchorPoint、position、frame</h3>
+
+<p>anchorPoint的默认值为(0.5,0.5)，也就是anchorPoint默认在layer的中心点。默认情况下，使用addSublayer函数添加layer时，如果已知layer的frame值，根据上面的结论，那么position的值便可以用下面的公式计算：</p>
+
+<figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">position.x = frame.origin.x + 0.5 * bounds.size.width；  
+</span><span class="line">position.y = frame.origin.y + 0.5 * bounds.size.height；  </span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<p>里面的0.5是因为anchorPoint取默认值，更通用的公式应该是下面的：</p>
+
+<figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">position.x = frame.origin.x + anchorPoint.x * bounds.size.width；  
+</span><span class="line">position.y = frame.origin.y + anchorPoint.y * bounds.size.height；</span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<p></p>
+
+<p>下面再来看另外两个问题，如果单方面修改layer的position位置，会对anchorPoint有什么影响呢？修改anchorPoint又如何影响position呢？  <br>
+根据代码测试，两者互不影响，受影响的只会是frame.origin，也就是layer坐标原点相对superLayer会有所改变。换句话说，frame.origin由position和anchorPoint共同决定，上面的公式可以变换成下面这样的：</p>
+
+<figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">frame.origin.x = position.x - anchorPoint.x * bounds.size.width；  
+</span><span class="line">frame.origin.y = position.y - anchorPoint.y * bounds.size.height；</span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<p></p>
+
+<p>这就解释了为什么修改anchorPoint会移动layer，因为position不受影响，只能是frame.origin做相应的改变，因而会移动layer。</p>
+
+<h3>理解与运用</h3>
+
+<p>在Apple doc对frame的描述中有这么一句话：</p>
+
+<blockquote><p>Layers have an implicit frame that is a function of the position, bounds, anchorPoint, and transform properties.</p></blockquote>
+
+<p>可以看到我们推导的公式基本符合这段描述，只不过还缺少了transform，加上transform的话就比较复杂，这里就不展开讲了。</p>
+
+<hr>
+
+<p>Apple doc中还有一句描述是这样的：</p>
+
+<blockquote><p>When you specify the frame of a layer, position is set relative to the anchor point. When you specify the position of the layer, bounds is set relative to the anchor point.</p></blockquote>
+
+<p>大意是：当你设置图层的frame属性的时候，position根据锚点（anchorPoint）的值来确定，而当你设置图层的position属性的时候，bounds会根据锚点(anchorPoint)来确定。</p>
+
+<p>这段翻译的上半句根据前面的公式容易理解，后半句可能就有点令人迷惑了，当修改position时，bounds的width与height会随之修改吗？其实,position是点，bounds是矩形，根据锚点(anchorPoint)来确定的只是它们的位置，而不是内部属性。所以，上面这段英文这么翻译就容易理解了：</p>
+
+<blockquote><p>当你设置图层的frame属性的时候，position点的位置（也就是position坐标）根据锚点（anchorPoint）的值来确定，而当你设置图层的position属性的时候，bounds的位置（也就是frame的orgin坐标）会根据锚点(anchorPoint)来确定。</p></blockquote>
+
+<p>在实际情况中，可能还有这样一种需求，我需要修改anchorPoint，但又不想要移动layer也就是不想修改frame.origin，那么根据前面的公式，就需要position做相应地修改。简单地推导，可以得到下面的公式：</p>
+
+<figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">positionNew.x = positionOld.x + (anchorPointNew.x - anchorPointOld.x)  * bounds.size.width  
+</span><span class="line">positionNew.y = positionOld.y + (anchorPointNew.y - anchorPointOld.y)  * bounds.size.height</span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<p></p>
+
+<p>但是在实际使用没必要这么麻烦。修改anchorPoint而不想移动layer，在修改anchorPoint后再重新设置一遍frame就可以达到目的，这时position就会自动进行相应的改变。写成函数就是下面这样的：</p>
+
+<figure class="code"> <div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+</pre></td><td class="code"><pre><code class="objc"><span class="line"><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="nf">setAnchorPoint:</span><span class="p">(</span><span class="n">CGPoint</span><span class="p">)</span><span class="nv">anchorpoint</span> <span class="nf">forView:</span><span class="p">(</span><span class="n">UIView</span> <span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">{</span>
+</span><span class="line">  <span class="n">CGRect</span> <span class="n">oldFrame</span> <span class="o">=</span> <span class="n">view</span><span class="p">.</span><span class="n">frame</span><span class="p">;</span>
+</span><span class="line">  <span class="n">view</span><span class="p">.</span><span class="n">layer</span><span class="p">.</span><span class="n">anchorPoint</span> <span class="o">=</span> <span class="n">anchorpoint</span><span class="p">;</span>
+</span><span class="line">  <span class="n">view</span><span class="p">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">oldFrame</span><span class="p">;</span>
+</span><span class="line"><span class="p">}</span>
+</span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<h3>总结</h3>
+
+<p>1、position是layer中的anchorPoint在superLayer中的位置坐标。<br>
+2、互不影响原则：单独修改position与anchorPoint中任何一个属性都不影响另一个属性。<br>
+3、frame、position与anchorPoint有以下关系：</p>
+
+<figure class="code"><div class="highlight"><table><tbody><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+</pre></td><td class="code"><pre><code class=""><span class="line">frame.origin.x = position.x - anchorPoint.x * bounds.size.width；  
+</span><span class="line">frame.origin.y = position.y - anchorPoint.y * bounds.size.height；</span></code></pre></td></tr></tbody></table></div></figure>
+
+
+<p></p>
+
+<p>第2条的互不影响原则还可以这样理解：position与anchorPoint是处于不同坐标空间中的重合点，修改重合点在一个坐标空间的位置不影响该重合点在另一个坐标空间中的位置。</p>
+
+<h3>后记</h3>
+
+<p>20140323：关于修改anchorPoint为什么会移动layer的位置，在刚才回复finder的评论时想到了一个更好的解释：  <br>
+还是以桌子与白纸为例，如果固定图钉在桌上的位置，也就是positon不变，这个时候图钉处在白纸的不同地方就是不同的anchorPoint，相应地也就是不同的frame。   <br>
+另一方面，如果固定图钉在白纸上的位置（没订在桌子上），不管怎么平移白纸，anchorPoint肯定是不变的，但frame肯定是随之变化的</p>
+
+<h4>参考</h4>
+
+<ul>
+<li><a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/CoreAnimation_guide/CoreAnimationBasics/CoreAnimationBasics.html#//apple_ref/doc/uid/TP40004514-CH2-SW15">Core Animation Programming Guide</a></li>
+<li><a href="http://stackoverflow.com/questions/1968017/changing-my-calayers-anchorpoint-moves-the-view">Changing my CALayer’s anchorPoint moves the view</a></li>
+<li><a href="http://www.cocoachina.com/bbs/simple/?t87118.html">对于anchorPoint的一点理解</a></li>
+<li><a href="http://www.dreamingwish.com/dream-2012/coreanimation-programming-guide-10-kvc.html">CoreAnimation编程指南(十)KVC</a></li>
+<li><a href="http://www.dreamingwish.com/dream-2012/coreanimation-programming-guide-c-the-geometric-transformation.html">CoreAnimation编程指南(三)几何变换</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">wonderffee</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-13T11:10:00+08:00" pubdate="" data-updated="true">Oct 13<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class="category" href="http://wonderffee.github.io/blog/categories/ios/">iOS</a>
+  
+</span>
+
+
+    </p>
+    <p class="meta">
+      原创文章，版权声明：自由转载-非商用-非衍生-保持署名 | <a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" id="">Creative Commons BY-NC-ND 3.0</a>
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+     
+<style>
+    .flash-video{display:none;}
+</style>
+
+<!-- JiaThis Button BEGIN -->
+<div id="ckepop">
+	<span class="jiathis_txt">分享到：</span>
+	<a class="jiathis_button_tsina">新浪微博</a>
+	<a class="jiathis_button_tqq">腾讯微博</a>
+	<a class="jiathis_button_renren">人人网</a>
+	<a class="jiathis_button_douban">豆瓣</a>
+	<a class="jiathis_button_qzone">QQ空间</a>
+
+	<a href="http://www.jiathis.com/share?uid=1810566" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank">更多</a>
+	<a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript">
+var jiathis_config = {
+	data_track_clickback:'true'
+	sm:"tsina,tqq,renren,douban,qzone",
+    summary:"",
+    hideMore:false
+};
+</script>
+<script type="text/javascript" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"><div id="uyan_cmt_box" style="width: 100%; font-family: &#39;Microsoft YaHei&#39;,arial,tahoma,宋体,sans-serif; position: relative; float: left;"><div id="uyan_top" style="height: 30px; font-size: 12px; font-weight: bold;"><div id="uyan_like" style="float: left; padding-right: 13px; padding-top: 2px; width: 88px;"><a id="uyan_vu" onclick="UYAN.voteUD(&#39;uu&#39;);" style="background: url(&#39;http://v2.uyan.cc/code/images/like.png&#39;) no-repeat scroll 19px 5px #999; border-radius: 3px 3px 3px 3px; color: #F2F2F2; cursor: pointer; float: left; font-weight: normal; height: 16px; padding: 3px; width: 48px;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/upDig.png" style="float: left; padding: 2px 5px 0 2px; border: 0 none;"></a><a id="uyan_vd" onclick="UYAN.voteUD(&#39;du&#39;);" style="background-color: #999; border-radius: 3px 3px 3px 3px; color: #F2F2F2; cursor: pointer; float: left; font-weight: normal; height: 16px; margin-left: 5px; padding: 3px; width: 16px;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/downDig.png" style="float: left; padding: 3px 0 0 2px;"></a><div style="clear: both;"></div></div><div id="uyan_count" style="font-size: 12px; color: #888888; float: left; font-weight: normal; padding: 5px 5px 0 0;">共有<span id="uyan_vun">8</span>人喜欢&nbsp;&nbsp;共<span id="uyan_acn">13</span>条评论</div><a id="uyan_login_btn" onclick="UYAN.login();" style="background-color: #999; border-radius: 3px 3px 3px 3px; color: #EEEEEE; cursor: pointer; float: right; font-size: 13px; font-weight: bold; height: 20px; margin-left: 5px; margin-top: 2px; height: 16px; line-height: 17px; padding: 3px 15px; text-shadow: 0 1px 0 #646464;">登录</a><a id="uyan_cmty_btn" onclick="UYAN.cmty();" style="background-color: #999; border-radius: 3px 3px 3px 3px; color: #EEEEEE; cursor: pointer; float: right; font-size: 13px; font-weight: bold; height: 20px; margin-left: 5px; margin-top: 2px; height: 16px; line-height: 17px; padding: 3px 15px; text-shadow: 0 1px 0 #646464;">社区</a><div style="clear: both;"></div></div><div id="uyan_usp" style="margin-bottom: 10px; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 4px 4px 4px 4px; padding: 10px;"><div style="font-size: 13px; height: 26px; overflow: hidden;"><a id="uyan_uname_txt_t" style="color: #5874af; cursor: pointer; display: block; float: left; font-weight: bold; margin: 6px 0 0 0; text-decoration: none; font-size: 16px; line-height: 17px;" href="javascript:;"></a><div style="background: url(&#39;http://v2.uyan.cc/code/images/medalIcon.png&#39;) no-repeat scroll 0 2px transparent; float: left; height: 20px; margin: 6px 0 0 10px; padding-left: 15px; line-height: 18px;"><div id="uyan_utname_edit" style="display: none;"><div style="color: #333333; float: left; padding-right: 4px;">头衔:</div><input id="uyan_utname" type="text" value="" style="color: #777777; float: left; height: 12px; padding: 1px 3px; width: 100px;"><a onclick="UYAN.setUtname();" style="background-color: #8BAD50; border: 1px solid #799E3C; border-radius: 3px 3px 3px 3px; color: #FFFFFF; cursor: pointer; float: left; margin-left: 3px; padding: 0 10px; text-align: center; text-decoration: none;">确定</a><a onclick="UYAN.changeUtname();" style="color: #AAAAAA; cursor: pointer; float: left; margin-left: 6px;">取消</a></div><div id="uyan_utname_txt"><div id="uyan_utname_show" style="color: #444444; float: left; padding-right: 5px;"></div><a onclick="UYAN.changeUtname();" style="color: #5874af; cursor: pointer; float: left; text-decoration: none;">编辑头衔</a></div></div><div style="background: url(&#39;http://v2.uyan.cc/code/images/emailIcon.png&#39;) no-repeat scroll 0 0 transparent; float: left; height: 20px; margin: 6px 0 0 10px; padding-left: 19px; line-height: 18px;"><div id="uyan_femail_edit" style="display: none;"><div style="color: #333333; float: left; padding-right: 4px;">邮箱:</div><input id="uyan_femail" type="text" value="" style="color: #777777; float: left; height: 12px; padding: 1px 3px; width: 100px;"><a onclick="UYAN.setFemail();" style="background-color: #8BAD50; border: 1px solid #799E3C; border-radius: 3px 3px 3px 3px; color: #FFFFFF; cursor: pointer; float: left; margin-left: 3px; padding: 0 10px; text-align: center; text-decoration: none;">确定</a><a onclick="UYAN.changeFemail();" style="color: #AAAAAA; cursor: pointer; float: left; margin-left: 6px;">取消</a></div><div id="uyan_femail_txt"><div id="uyan_femail_show" style="color: #444444; float: left; padding-right: 5px;"></div><a onclick="UYAN.changeFemail();" style="color: #5874af; cursor: pointer; float: left; text-decoration: none;">跟踪回复</a></div></div><div style="clear: both;"></div></div><div style="padding: 4px 0;"><div id="uyan_uacn" style="font-size: 12px; float: left; padding: 0 10px 0 0;">0条评论</div><div id="uyan_uvon" style="font-size: 12px; float: left; padding: 0 10px 0 0;">0次被喜欢</div><div style="clear: both;"></div></div><div style="clear: both;"></div></div><div id="uyan_ddword" style="padding: 0 0 5px 60px;"><span id="uyan_ddword_info" style="color: #444444; font-size: 13px; font-weight: bold; text-align: left;"></span></div><div id="uyan_loginot" style="padding: 0 0 3px 60px;"><a onclick="UYAN.loginTSina();" style="padding: 0; cursor: pointer; display: block; float: left; height: 23px; margin-bottom: 2px; margin-right: 3px; width: 59px; background: url(&#39;http://v2.uyan.cc/code/images/bbtn.png&#39;) no-repeat scroll -61px 0 transparent;"></a><a onclick="UYAN.loginTQq();" style="padding: 0; cursor: pointer; display: block; float: left; height: 23px; margin-bottom: 2px; margin-right: 3px; width: 59px; background: url(&#39;http://v2.uyan.cc/code/images/bbtn.png&#39;) no-repeat scroll -122px 0 transparent;"></a><a onclick="UYAN.loginQq();" style="padding: 0; cursor: pointer; display: block; float: left; height: 23px; margin-bottom: 2px; margin-right: 3px; width: 59px; background: url(&#39;http://v2.uyan.cc/code/images/bbtn.png&#39;) no-repeat scroll 0 0 transparent;"></a><a onclick="UYAN.loginRenren();" style="padding: 0; cursor: pointer; display: block; float: left; height: 23px; margin-bottom: 2px; margin-right: 3px; width: 59px; background: url(&#39;http://v2.uyan.cc/code/images/bbtn.png&#39;) no-repeat scroll -244px 0 transparent;"></a><a onclick="UYAN.login();" style="padding: 0; cursor: pointer; display: block; float: left; height: 23px; margin-bottom: 2px; margin-right: 3px; width: 59px; background: url(&#39;http://v2.uyan.cc/code/images/bbtn.png&#39;) no-repeat scroll -549px 0 transparent;"></a><div style="clear: both;"></div></div><div id="uyan_star" style="height: 30px; padding: 0 0 0 60px; overflow: hidden;"><div style="float: left;"><a id="uyan_vs_1" onclick="UYAN.voteStar(1);" onmouseover="UYAN.cagStar(1);" onmouseout="UYAN.cagStar(0);" style="background: url(&#39;http://v2.uyan.cc/code/images/star_b_un.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; float: left; height: 24px; padding-right: 5px; width: 24px;"></a><a id="uyan_vs_2" onclick="UYAN.voteStar(2);" onmouseover="UYAN.cagStar(2);" onmouseout="UYAN.cagStar(0);" style="background: url(&#39;http://v2.uyan.cc/code/images/star_b_un.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; float: left; height: 24px; padding-right: 5px; width: 24px;"></a><a id="uyan_vs_3" onclick="UYAN.voteStar(3);" onmouseover="UYAN.cagStar(3);" onmouseout="UYAN.cagStar(0);" style="background: url(&#39;http://v2.uyan.cc/code/images/star_b_un.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; float: left; height: 24px; padding-right: 5px; width: 24px;"></a><a id="uyan_vs_4" onclick="UYAN.voteStar(4);" onmouseover="UYAN.cagStar(4);" onmouseout="UYAN.cagStar(0);" style="background: url(&#39;http://v2.uyan.cc/code/images/star_b_un.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; float: left; height: 24px; padding-right: 5px; width: 24px;"></a><a id="uyan_vs_5" onclick="UYAN.voteStar(5);" onmouseover="UYAN.cagStar(5);" onmouseout="UYAN.cagStar(0);" style="background: url(&#39;http://v2.uyan.cc/code/images/star_b_un.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; float: left; height: 24px; padding-right: 5px; width: 24px;"></a><div style="clear: both;"></div></div></div><div style="height: 78px; overflow: hidden; padding: 0 0 20px 0; _padding: 0;"><div style="float: left; border-radius: 6px 6px 6px 6px; width: 50px; height: 50px; overflow: hidden; margin-right: 10px;"><img id="uyan_uface" style="width: 50px; height: 50px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/duface.png"></div><div style="padding: 0 0 0 60px; overflow: visible;"><div onclick="UYAN.hidIntro(this.firstChild);" style="height: 60px; background: url(&#39;http://v2.uyan.cc/code/images/textareabg.png&#39;) repeat-x scroll 0 0 #FFFFFF; border: 1px solid #d7d7d7; border-radius: 4px 4px 4px 4px; padding: 7px; position: relative; overflow: hidden; cursor: text;"><textarea id="uyan_comment" onkeyup="UYAN.checkTxt(this, 140);" onkeydown="UYAN.checkTxt(this, 140);" onfocus="UYAN.hidIntro(this);" onblur="UYAN.shoIntro(this);" style="background: none repeat scroll 0 0 #FFFFFF; padding: 0; box-shadow: 0 0; color: #BDBBBB; border: 0; z-index: 90; overflow: hidden; float: left; font-size: 13px; font-family: &#39;Microsoft YaHei&#39;,arial,tahoma,宋体,sans-serif; resize: none; height: 60px; display: block; outline: none; word-wrap: break-word; margin: 0;">请输入你的评论</textarea><pre style="width: 100%; font-size: 13px; left: 0; line-height: 18px; position: absolute; top: 0; visibility: hidden; word-wrap: break-word; white-space: pre-wrap;" id="uyan_cmt_cnt"></pre></div><div style="clear: both;"></div></div><div id="uyan_smile" onclick="UYAN.shoSmile(this);" style="display: none; background: url(&#39;http://v2.uyan.cc/code/images/emotion.png&#39;) no-repeat scroll 6px 2px #FFFFFF; color: #3A82FF; cursor: pointer; font-size: 11px; height: 17px; left: 70px; position: relative; top: -2px; width: 60px; z-index: 5500; border: 1px solid #d7d7d7; border-top: none; border-radius: 2px; margin: 0; line-height: 20px; padding-bottom: 2px; font-family: &#39;Microsoft YaHei&#39;,arial,tahoma,宋体,sans-serif; text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;表情</div></div><div id="uyan_ssmile" style="margin-left: 60px; margin-top: -20px; _margin-top: 0; position: absolute; z-index: 9999; display: none;"><div style="border: 1px solid #989999; border-radius: 5px; width: 322px; height: 160px; background: #fff; font-size: 12px; padding: 6px;"><ul style="margin: 5px 0 0 0; padding: 0; height: 24px;"><li id="uyan_ssmile_df" onclick="UYAN.shoSmile(this, &#39;df&#39;);" style="float: left; list-style: none; line-height: 22px; background: url(&#39;http://v2.uyan.cc/code/images/smileb.gif&#39;) no-repeat scroll 0 center transparent; color: #fff; width: 68px; height: 24px; overflow: hidden; text-align: center; margin: 0 5px; display: inline; cursor: pointer; padding: 0;">默认表情</li><li id="uyan_ssmile_al" onclick="UYAN.shoSmile(this, &#39;al&#39;);" style="float: left; list-style: none; line-height: 22px; background: none repeat scroll 0 center transparent; width: 68px; height: 24px; overflow: hidden; text-align: center; margin: 0 5px; display: inline; cursor: pointer; padding: 0;">阿狸</li></ul><ul id="uyan_ssmile_list" style="margin: 0; padding: 0; width: 310px; border-top: 1px solid #d3e4f0; border-left: 1px solid #d3e4f0; margin: 5px 0 0 5px;"></ul></div></div><div style="color: #D2D2D2; height: 20px; font-size: 13px; position: absolute; z-index: 100; margin-right: 10px; margin-top: -42px; right: 0;"><span id="uyan_tts">140</span></div><div id="uyan_stat_btn" style="position: relative; height: 40px; overflow: hidden; margin-top: -20px; _margin-top: 0;"><a id="uyan_cmt_btn" onmouseover="UYAN.cagBtn(&#39;on&#39;, this);" onmouseout="UYAN.cagBtn(&#39;out&#39;, this);" style="background: url(&#39;http://v2.uyan.cc/code/images/buttonLarge.png&#39;) repeat-x scroll 0 0 transparent; border: 1px solid #d0cfcf; border-radius: 5px 5px 5px 5px; color: #666; cursor: pointer; float: right; font-size: 13px; font-weight: bold; height: 24px; line-height: 21px; margin: 4px 0 0; padding: 3px 25px 1px; text-align: center; text-shadow: 0 1px 0 #FFFFFF;" onclick="UYAN.addCmt(this);">发&nbsp;&nbsp;布</a><div style="clear: both;"></div></div><div id="uyan_slog" class="uyan_st_slog" onmouseover="UYAN.show(this);" onmouseout="UYAN.hide(this);" style="background-color: #FFFFFF; border-color: #d3d2d2; border-width: 1px 1px 2px; border-style: solid; position: absolute; z-index: 90000; padding: 1px 3px; display: none; width: 20px;"><div onclick="UYAN.loginKaixin001();" title="kaixin001" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/kaixin001.png"></div><div onclick="UYAN.loginTSohu();" title="sohu" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/tsohu.png"></div><div onclick="UYAN.loginT163();" title="163" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/t163.png"></div></div><div id="uyan_sort" style="color: #424242; font-size: 12px; padding-left: 60px;"><div style="height: 18px; overflow: hidden; float: left;"><a id="uyan_sort_name" onclick="UYAN.cmtSort();" style="background: url(&#39;http://v2.uyan.cc/code/images/sorttype.png&#39;) no-repeat scroll right 7px transparent; color: #424242; cursor: pointer; display: block; float: left; font-size: 12px; padding-right: 15px;">按时间排序</a></div><div style="clear: both;"></div></div><div id="uyan_sort_box" style="background-color: #FFFFFF; border-color: #d3d2d2; border-width: 1px 1px 2px; border-style: solid; left: 60px; position: absolute; width: 115px; z-index: 90000; display: none;"><div style="color: #9797C4; font-size: 12px; font-weight: normal; padding-bottom: 2px; padding-left: 21px; padding-top: 4px; height: 16px;">排序方式:</div><a id="uyan_sort_time" onclick="UYAN.cmtSort(0);" style="color: rgb(28, 28, 28); cursor: pointer; display: block; font-size: 12px; padding-bottom: 2px; padding-left: 21px; padding-top: 2px; height: 16px; font-weight: bold; background: url(&quot;http://v2.uyan.cc/code/images/currentSort.png&quot;) 8px 8px no-repeat scroll transparent;">按时间排序</a><a id="uyan_sort_hot" onclick="UYAN.cmtSort(1);" style="color: #1C1C1C; cursor: pointer; display: block; font-size: 12px; padding-bottom: 2px; padding-left: 21px; padding-top: 2px; height: 16px;">按热度排序</a></div><div id="uyan_cmt_list">	<div id="uyan_cmt_33042755" onmouseover="UYAN.changeS(this, &#39;on&#39;, &#39;33042755&#39;);" onmouseout="UYAN.changeS(this, &#39;out&#39;, &#39;33042755&#39;);" style="padding: 15px 0;">		<div style="position: relative; float: left; border-radius: 6px 6px 6px 6px; width: 50px; height: 50px; margin-right: 10px;">			<a href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F1937768813" style="cursor: pointer; text-decoration: none; white-space: inherit;" target="_blank">				<img style="border: 0 none; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.22); border-radius: 4px; width: 50px; height: 50px;" onload="UYAN.loadUface(this, &#39;http://tp2.sinaimg.cn/1937768813/50/5735100526/1&#39;, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/1" onerror="UYAN.noUface(this, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);">			</a>			<span style="bottom: -4px; position: absolute; right: -5px;">				<a title="新浪微博" style="cursor: pointer; text-decoration: none; background: url(&#39;http://v2.uyan.cc/code/images/stsina.png&#39;) no-repeat scroll 0 0 transparent; background-position: 0 0; opacity: 1; display: block; float: left; height: 16px !important; line-height: 100px; opacity: 0.8; overflow: hidden; width: 16px !important;" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F1937768813" target="_blank"></a>			</span>		</div>		<div style="padding-left: 60px;">			<div style="color: #303030; font-size: 13px; line-height: 18px; height: 26px; background: url(&#39;http://v2.uyan.cc/code/images/tbbg.png&#39;) repeat-x scroll 0 0 transparent; border: 1px solid #CCCCCC; border-radius: 3px 3px 3px 3px; margin: 0 0 1em; max-height: 36px; overflow: hidden; padding: 6px 5px 0; position: relative; text-overflow: ellipsis; white-space: nowrap; -moz-border-radius: 3px; -webkit-border-radius: 3px;">				<a id="uyan_cmt_uname_33042755" class="uyan_cmt_uname" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F1937768813" target="_blank" style="font-weight: bold; color: #2B8CE6; cursor: pointer; float: left; text-decoration: none; padding-right: 6px;">kDurian</a>								<span class="uyan_cmt_ufromname" style="color: #aaaaaa; float: left;">(<a style="color: #aaaaaa; text-decoration: none;" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F1937768813" target="_blank">新浪微博</a>)</span>				<div id="uyan_star_33042755" style="float: right; display: none;"></div>			</div>			<div class="uyan_cmt_txt" style="color: #303030; font-size: 13px; line-height: 18px; word-wrap: break-word; text-align: left;">太他妈牛逼了</div>			<div class="uyan_cmt_exp" style="padding: 5px 5px 0 0; line-height: 14px;">				<a id="uyan_exp_rpy_33042755" onclick="UYAN.addRpy(33042755);" onmouseover="UYAN.mouseOO(this.nextSibling, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this.nextSibling, &#39;rpy2.png&#39;);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 4px 0 0;">回复</a><a onclick="UYAN.addRpy(33042755);" onmouseover="UYAN.mouseOO(this, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this, &#39;rpy2.png&#39;);" style="background: url(&#39;http://v2.uyan.cc/code/images/rpy2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 14px;"></a>				<a onclick="UYAN.cmtUD(&#39;du&#39;, 33042755);" style="color: #999999; cursor: pointer; display: none; float: right; font-size: 11px; padding: 0 10px 0 0;">踩<span id="uyan_cd_33042755" style="padding-left: 3px;"></span></a>				<a id="uyan_cdw_33042755" onclick="UYAN.cmtUD(&#39;du&#39;, 33042755);" style="background: url(&#39;http://v2.uyan.cc/code/images/downDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: none; float: right; height: 13px; margin-right: 4px; margin-top: 3px; width: 13px;"></a>				<a onclick="UYAN.cmtUD(&#39;uu&#39;, 33042755);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 10px 0 0;">顶<span id="uyan_cu_33042755" style="padding-left: 3px;">1</span></a>				<a id="uyan_cuw_33042755" onclick="UYAN.cmtUD(&#39;uu&#39;, 33042755);" style="background: url(&#39;http://v2.uyan.cc/code/images/upDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 13px;"></a>								<div style="color: #999999; float: left; font-size: 11px; padding: 0 10px 0 0;">2015-10-16 17:34</div>				<div style="clear: both;"></div>			</div>		</div>		<div style="clear: both;"></div>	</div>	<div id="uyan_cmt_31809198" onmouseover="UYAN.changeS(this, &#39;on&#39;, &#39;31809198&#39;);" onmouseout="UYAN.changeS(this, &#39;out&#39;, &#39;31809198&#39;);" style="padding: 15px 0;">		<div style="position: relative; float: left; border-radius: 6px 6px 6px 6px; width: 50px; height: 50px; margin-right: 10px;">			<a href="" style="cursor: pointer; text-decoration: none; white-space: inherit;" target="_blank">				<img style="border: 0 none; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.22); border-radius: 4px; width: 50px; height: 50px;" onload="UYAN.loadUface(this, &#39;http://v2.uyan.cc/code/images/duface.png&#39;, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/duface.png" onerror="UYAN.noUface(this, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);">			</a>			<span style="bottom: -4px; position: absolute; right: -5px;">				<a title="游客" style="cursor: pointer; text-decoration: none; background: url(&#39;http://v2.uyan.cc/code/images/semail.png&#39;) no-repeat scroll 0 0 transparent; background-position: 0 0; opacity: 1; display: block; float: left; height: 16px !important; line-height: 100px; opacity: 0.8; overflow: hidden; width: 16px !important;" href="" target="_blank"></a>			</span>		</div>		<div style="padding-left: 60px;">			<div style="color: #303030; font-size: 13px; line-height: 18px; height: 26px; background: url(&#39;http://v2.uyan.cc/code/images/tbbg.png&#39;) repeat-x scroll 0 0 transparent; border: 1px solid #CCCCCC; border-radius: 3px 3px 3px 3px; margin: 0 0 1em; max-height: 36px; overflow: hidden; padding: 6px 5px 0; position: relative; text-overflow: ellipsis; white-space: nowrap; -moz-border-radius: 3px; -webkit-border-radius: 3px;">				<a id="uyan_cmt_uname_31809198" class="uyan_cmt_uname" href="" target="_blank" style="font-weight: bold; color: #2B8CE6; cursor: pointer; float: left; text-decoration: none; padding-right: 6px;">brzhang</a>								<span class="uyan_cmt_ufromname" style="color: #aaaaaa; float: left;">(<a style="color: #aaaaaa; text-decoration: none;" href="" target="_blank">游客</a>)</span>				<div id="uyan_star_31809198" style="float: right; display: none;"></div>			</div>			<div class="uyan_cmt_txt" style="color: #303030; font-size: 13px; line-height: 18px; word-wrap: break-word; text-align: left;">纯属于放屁 ，iOS使用左手坐标系，坐标原点在左上角，MacOS使用右手坐标系，原点在左下角，请问左手坐标系是啥，右手坐标系是啥？？</div>			<div class="uyan_cmt_exp" style="padding: 5px 5px 0 0; line-height: 14px;">				<a id="uyan_exp_rpy_31809198" onclick="UYAN.addRpy(31809198);" onmouseover="UYAN.mouseOO(this.nextSibling, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this.nextSibling, &#39;rpy2.png&#39;);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 4px 0 0;">回复</a><a onclick="UYAN.addRpy(31809198);" onmouseover="UYAN.mouseOO(this, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this, &#39;rpy2.png&#39;);" style="background: url(&#39;http://v2.uyan.cc/code/images/rpy2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 14px;"></a>				<a onclick="UYAN.cmtUD(&#39;du&#39;, 31809198);" style="color: #999999; cursor: pointer; display: none; float: right; font-size: 11px; padding: 0 10px 0 0;">踩<span id="uyan_cd_31809198" style="padding-left: 3px;"></span></a>				<a id="uyan_cdw_31809198" onclick="UYAN.cmtUD(&#39;du&#39;, 31809198);" style="background: url(&#39;http://v2.uyan.cc/code/images/downDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: none; float: right; height: 13px; margin-right: 4px; margin-top: 3px; width: 13px;"></a>				<a onclick="UYAN.cmtUD(&#39;uu&#39;, 31809198);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 10px 0 0;">顶<span id="uyan_cu_31809198" style="padding-left: 3px;">3</span></a>				<a id="uyan_cuw_31809198" onclick="UYAN.cmtUD(&#39;uu&#39;, 31809198);" style="background: url(&#39;http://v2.uyan.cc/code/images/upDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 13px;"></a>								<div style="color: #999999; float: left; font-size: 11px; padding: 0 10px 0 0;">2015-8-22 17:15</div>				<div style="clear: both;"></div>			</div>		</div>		<div style="clear: both;"></div>	</div>	<div id="uyan_cmt_31553682" onmouseover="UYAN.changeS(this, &#39;on&#39;, &#39;31553682&#39;);" onmouseout="UYAN.changeS(this, &#39;out&#39;, &#39;31553682&#39;);" style="padding: 15px 0;">		<div style="position: relative; float: left; border-radius: 6px 6px 6px 6px; width: 50px; height: 50px; margin-right: 10px;">			<a href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F3131005615" style="cursor: pointer; text-decoration: none; white-space: inherit;" target="_blank">				<img style="border: 0 none; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.22); border-radius: 4px; width: 50px; height: 50px;" onload="UYAN.loadUface(this, &#39;http://tp4.sinaimg.cn/3131005615/50/22839121477/1&#39;, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/1(1)" onerror="UYAN.noUface(this, &#39;http://v2.uyan.cc/code/images/duface.png&#39;);">			</a>			<span style="bottom: -4px; position: absolute; right: -5px;">				<a title="新浪微博" style="cursor: pointer; text-decoration: none; background: url(&#39;http://v2.uyan.cc/code/images/stsina.png&#39;) no-repeat scroll 0 0 transparent; background-position: 0 0; opacity: 1; display: block; float: left; height: 16px !important; line-height: 100px; opacity: 0.8; overflow: hidden; width: 16px !important;" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F3131005615" target="_blank"></a>			</span>		</div>		<div style="padding-left: 60px;">			<div style="color: #303030; font-size: 13px; line-height: 18px; height: 26px; background: url(&#39;http://v2.uyan.cc/code/images/tbbg.png&#39;) repeat-x scroll 0 0 transparent; border: 1px solid #CCCCCC; border-radius: 3px 3px 3px 3px; margin: 0 0 1em; max-height: 36px; overflow: hidden; padding: 6px 5px 0; position: relative; text-overflow: ellipsis; white-space: nowrap; -moz-border-radius: 3px; -webkit-border-radius: 3px;">				<a id="uyan_cmt_uname_31553682" class="uyan_cmt_uname" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F3131005615" target="_blank" style="font-weight: bold; color: #2B8CE6; cursor: pointer; float: left; text-decoration: none; padding-right: 6px;">天涯路丶执着</a>								<span class="uyan_cmt_ufromname" style="color: #aaaaaa; float: left;">(<a style="color: #aaaaaa; text-decoration: none;" href="http://s.uyan.cc/?u=http%3A%2F%2Fweibo.com%2F3131005615" target="_blank">新浪微博</a>)</span>				<div id="uyan_star_31553682" style="float: right; display: none;"></div>			</div>			<div class="uyan_cmt_txt" style="color: #303030; font-size: 13px; line-height: 18px; word-wrap: break-word; text-align: left;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/4.png">厉害，</div>			<div class="uyan_cmt_exp" style="padding: 5px 5px 0 0; line-height: 14px;">				<a id="uyan_exp_rpy_31553682" onclick="UYAN.addRpy(31553682);" onmouseover="UYAN.mouseOO(this.nextSibling, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this.nextSibling, &#39;rpy2.png&#39;);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 4px 0 0;">回复</a><a onclick="UYAN.addRpy(31553682);" onmouseover="UYAN.mouseOO(this, &#39;rpy.png&#39;);" onmouseout="UYAN.mouseOO(this, &#39;rpy2.png&#39;);" style="background: url(&#39;http://v2.uyan.cc/code/images/rpy2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 14px;"></a>				<a onclick="UYAN.cmtUD(&#39;du&#39;, 31553682);" style="color: #999999; cursor: pointer; display: none; float: right; font-size: 11px; padding: 0 10px 0 0;">踩<span id="uyan_cd_31553682" style="padding-left: 3px;"></span></a>				<a id="uyan_cdw_31553682" onclick="UYAN.cmtUD(&#39;du&#39;, 31553682);" style="background: url(&#39;http://v2.uyan.cc/code/images/downDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: none; float: right; height: 13px; margin-right: 4px; margin-top: 3px; width: 13px;"></a>				<a onclick="UYAN.cmtUD(&#39;uu&#39;, 31553682);" style="color: #999999; cursor: pointer; display: block; float: right; font-size: 11px; padding: 0 10px 0 0;">顶<span id="uyan_cu_31553682" style="padding-left: 3px;"></span></a>				<a id="uyan_cuw_31553682" onclick="UYAN.cmtUD(&#39;uu&#39;, 31553682);" style="background: url(&#39;http://v2.uyan.cc/code/images/upDig2.png&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; float: right; height: 13px; margin-right: 4px; margin-top: 0px; width: 13px;"></a>								<div style="color: #999999; float: left; font-size: 11px; padding: 0 10px 0 0;">2015-8-7 13:36</div>				<div style="clear: both;"></div>			</div>		</div>		<div style="clear: both;"></div>	</div><div id="uyan_more_cmt" onclick="UYAN.showMore(this, 1);" onmouseover="UYAN.changeMore(&#39;on&#39;, this);" onmouseout="UYAN.changeMore(&#39;out&#39;, this);" style="cursor: pointer; background: none repeat scroll 0 0 #fcfcfc; height: 28px; line-height: 28px; display: block; border: 1px solid #dcdcdc; margin-top: 15px; margin-bottom: 10px; text-align: center; border-radius: 3px; font-size: 13px; color: #424242; text-decoration: none;">查看更多评论<img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/arrow.png" style="padding-left: 4px; border: none; display: inline;"></div></div><div class="ujian-uyan"></div><div style="float: right; font-size: 12px; padding: 20px 8px 10px 0;">    <a style="color: #aaaaaa; text-decoration: none;" target="_blank" title="社会化评论是什么？" href="http://www.uyan.cc/">友言[?]</a>    </div>    <div style="clear: both;"></div></div><div id="uyan_rpy" style="display: none; padding-left: 60px; padding-top: 10px;"><div style="height: 78px; overflow: hidden; padding: 0 0 20px 0; _padding: 0;"><div style="float: left; border-radius: 6px 6px 6px 6px; width: 38px; height: 38px; overflow: hidden; margin-right: 10px;"><img id="uyan_uface_r" style="width: 38px; height: 38px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/duface.png"></div><div style="padding: 0 0 0 48px; overflow: visible;"><div onclick="UYAN.hidIntro(this.firstChild, uyan_smile_region);" style="height: 60px; background: url(&#39;http://v2.uyan.cc/code/images/textareabg.png&#39;) repeat-x scroll 0 0 #FFFFFF; border: 1px solid #d7d7d7; border-radius: 4px 4px 4px 4px; padding: 7px; position: relative; overflow: hidden; cursor: text;"><textarea id="uyan_comment" onkeyup="UYAN.checkTxt(this, 140, uyan_tts_region);" onkeydown="UYAN.checkTxt(this, 140, uyan_tts_region);" onfocus="UYAN.hidIntro(this, uyan_smile_region);" onblur="UYAN.shoIntro(this, uyan_smile_region);" style="background: none repeat scroll 0 0 #FFFFFF; padding: 0; box-shadow: 0 0; color: #BDBBBB; border: 0; z-index: 90; overflow: hidden; float: left; font-size: 13px; font-family: &#39;Microsoft YaHei&#39;,arial,tahoma,宋体,sans-serif; resize: none; height: 60px; display: block; outline: none; word-wrap: break-word; margin: 0;">请输入你的评论</textarea><pre style="width: 100%; font-size: 13px; left: 0; line-height: 18px; position: absolute; top: 0; visibility: hidden; word-wrap: break-word; white-space: pre-wrap;" id="uyan_cmt_cnt"></pre></div><div style="clear: both;"></div></div><div id="uyan_smile" onclick="UYAN.shoSmile(this, &#39;&#39;, uyan_smile_region);" style="display: none; background: url(&#39;http://v2.uyan.cc/code/images/emotion.png&#39;) no-repeat scroll 6px 2px #FFFFFF; color: #3A82FF; cursor: pointer; font-size: 11px; height: 17px; left: 58px; position: relative; top: -2px; width: 60px; z-index: 5500; border: 1px solid #d7d7d7; border-top: none; border-radius: 2px; margin: 0; line-height: 20px; padding-bottom: 2px; font-family: &#39;Microsoft YaHei&#39;,arial,tahoma,宋体,sans-serif; text-align: center;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;表情</div></div><div id="uyan_ssmile" style="margin-left: 48px; margin-top: -20px; _margin-top: 0; position: absolute; z-index: 9999; display: none;"><div style="border: 1px solid #989999; border-radius: 5px; width: 322px; height: 160px; background: #fff; font-size: 12px; padding: 6px;"><ul style="margin: 5px 0 0 0; padding: 0; height: 24px;"><li id="uyan_ssmile_df" onclick="UYAN.shoSmile(this, &#39;df&#39;, uyan_smile_region);" style="float: left; list-style: none; line-height: 22px; background: url(&#39;http://v2.uyan.cc/code/images/smileb.gif&#39;) no-repeat scroll 0 center transparent; color: #fff; width: 68px; height: 24px; overflow: hidden; text-align: center; margin: 0 5px; display: inline; cursor: pointer; padding: 0;">默认表情</li><li id="uyan_ssmile_al" onclick="UYAN.shoSmile(this, &#39;al&#39;, uyan_smile_region);" style="float: left; list-style: none; line-height: 22px; background: none repeat scroll 0 center transparent; width: 68px; height: 24px; overflow: hidden; text-align: center; margin: 0 5px; display: inline; cursor: pointer; padding: 0;">阿狸</li></ul><ul id="uyan_ssmile_list" style="margin: 0; padding: 0; width: 310px; border-top: 1px solid #d3e4f0; border-left: 1px solid #d3e4f0; margin: 5px 0 0 5px;"></ul></div></div><div style="color: #D2D2D2; height: 20px; font-size: 13px; position: absolute; z-index: 100; margin-right: 10px; margin-top: -42px; right: 0;"><span id="uyan_tts">140</span></div><div id="uyan_stat_btn_r" style="position: relative; height: 40px; overflow: hidden; margin-top: -20px; _margin-top: 0;"><a id="uyan_cmt_btn" onmouseover="UYAN.cagBtn(&#39;on&#39;, this);" onmouseout="UYAN.cagBtn(&#39;out&#39;, this);" style="background: url(&#39;http://v2.uyan.cc/code/images/buttonLarge.png&#39;) repeat-x scroll 0 0 transparent; border: 1px solid #d0cfcf; border-radius: 5px 5px 5px 5px; color: #666; cursor: pointer; float: right; font-size: 13px; font-weight: bold; height: 24px; line-height: 21px; margin: 4px 0 0; padding: 3px 25px 1px; text-align: center; text-shadow: 0 1px 0 #FFFFFF;" onclick="UYAN.addCmt(this, uyan_comment_region);">回&nbsp;&nbsp;复</a><div style="clear: both;"></div></div><div id="uyan_slog" class="uyan_st_slog" onmouseover="UYAN.show(this);" onmouseout="UYAN.hide(this);" style="background-color: #FFFFFF; border-color: #d3d2d2; border-width: 1px 1px 2px; border-style: solid; position: absolute; z-index: 90000; padding: 1px 3px; display: none; width: 20px;"><div onclick="UYAN.loginKaixin001();" title="kaixin001" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/kaixin001.png"></div><div onclick="UYAN.loginTSohu();" title="sohu" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/tsohu.png"></div><div onclick="UYAN.loginT163();" title="163" style="color: #9797C4;  font-size: 12px; font-weight: normal; width:16px; margin:0 auto; padding:2px 0; cursor: pointer; height: 17px; overflow: hidden;"><img src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/t163.png"></div></div></div><div style="clear: both;"></div><div id="uyan_box" style="font-family: &#39;Microsoft YaHei&#39;; display: none; top: 0px; left: 0px; z-index: 9999999; opacity: 1; empty-cells: show; position: absolute; background: none repeat scroll 0 0 #FFFFFF; text-align: left;"><table cellspacing="0" cellpadding="0" border="0" style="border: none; width: auto; line-height: normal;"><tbody><tr><td style="background: url(&#39;http://v2.uyan.cc/code/images/boxnw.png&#39;) repeat scroll 0 0 transparent; height: 10px; padding: 0; width: 10px; opacity: 0.5;"></td><td style="background-color: black; height: 10px; opacity: 0.3; padding: 0; filter: alpha(opacity=60);"></td><td onclick="UYAN.hideBox();" style="background: url(&#39;http://v2.uyan.cc/code/images/boxclose.png&#39;) no-repeat scroll 0 0 transparent; _background: url(&#39;http://v2.uyan.cc/code/images/boxclose.gif&#39;) no-repeat scroll 0 0 transparent; cursor: pointer; display: block; height: 23px; position: absolute; right: -8px; top: -8px; width: 23px; z-index: 100000; padding: 0;"></td></tr><tr><td style="background-color: black; opacity: 0.6; padding: 0; width: 10px; opacity: 0.3; filter: alpha(opacity=60);"></td><td style="background-color: white; padding: 0;"><div id="uyan_box_cnt"></div></td><td style="background-color: black; opacity: 0.6; padding: 0; width: 10px; opacity: 0.3; filter: alpha(opacity=60);"></td></tr><tr><td style="background: url(&#39;http://v2.uyan.cc/code/images/boxsw.png&#39;) repeat scroll 0 0 transparent; height: 10px; padding: 0; width: 10px; opacity: 0.5;"></td><td style="background-color: black; height: 10px; opacity: 0.3; padding: 0; filter: alpha(opacity=60);"></td><td style="background: url(&#39;http://v2.uyan.cc/code/images/boxse.png&#39;) repeat scroll 0 0 transparent; height: 10px; padding: 0; width: 10px; opacity: 0.5;"></td></tr></tbody></table></div><div id="uyan_cmty" style="display: none;"><div style="width: 520px;"><div style="border-bottom: 1px solid #b6b5b5; background: #eeeeee; color: #666; font-size: 16px; height: 22px; padding: 10px 0;"><span id="uyan_sdm_name" style="float: left; padding-left: 25px; text-shadow: 0 1px 0 #fff;">wonderffee.github.io</span></div><div style="color: #666;"><div style="background: url(&#39;http://v2.uyan.cc/code/images/commentWeb.png&#39;) no-repeat 20px 13px; border-right: 1px solid #EEEEEE; float: left; height: 49px; padding-left: 70px; padding-top: 6px; width: 102px;"><span id="uyan_dacn" style="font-size: 18px;">36</span><br><span style="font-size: 12px;">评论数</span></div><div style="background: url(&#39;http://v2.uyan.cc/code/images/likeWeb.png&#39;) no-repeat 24px 10px; border-right: 1px solid #EEEEEE; float: left; height: 49px; padding-left: 70px; padding-top: 6px; width: 102px;"><span id="uyan_dvun" style="font-size: 18px;">18</span><br><span style="font-size: 12px;">喜欢数</span></div><div style="background: url(&#39;http://v2.uyan.cc/code/images/humanWeb.png&#39;) no-repeat 27px 13px; border-right: 1px solid #EEEEEE; float: left; height: 49px; padding-left: 70px; padding-top: 6px; width: 102px;"><span id="uyan_daun" style="font-size: 18px;">15</span><br><span style="font-size: 12px;">用户数</span></div><div style="clear: both;"></div></div><div id="uyan_cmty_info_tmp" style="border-top: 1px solid #CCCCCC; padding: 10px 20px; font-size: 15px; color: #555555;">数据正在加载中...</div><div style="background-color: #F0F0F0; border-top: 1px solid #CCCCCC; height: 20px; padding-top: 6px;"><a target="_blank" href="http://www.uyan.cc/" style="color: #6B6B6B; cursor: pointer; display: block; float: right; font-family: Arial, Helvetica, sans-serif; font-size: 11px; margin-right: 15px; text-decoration: none;">友言</a><div style="clear: both;"></div></div></div></div><div id="uyan_login" style="display: none;"><div style="border-bottom: 1px solid #b6b5b5; background: #eeeeee; color: #666; font-size: 16px; height: 22px; padding: 10px 0;"><span style="padding-left: 25px; text-shadow: 0 1px 0 #fff; font-weight: 600;">社会化帐号登录</span></div><div style="width: 429px; padding: 22px;"><h2 style="margin: 0; font-size: 14px; font-weight: normal; color: #666; padding-left: 25px; padding-bottom: 5px; background: none repeat scroll 0 center transparent;">点击按钮，使用社交帐号评论</h2><div id="uyan_loginom" style="padding-bottom: 20px;"><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用新浪微博账号登陆" onclick="UYAN.loginTSina();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用新浪微博账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/tsina.png">&nbsp;&nbsp;新浪微博</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用QQ账号登陆" onclick="UYAN.loginQq();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用QQ账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/qq.png">&nbsp;&nbsp;QQ</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用腾讯微博账号登陆" onclick="UYAN.loginTQq();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用腾讯微博账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/tqq.png">&nbsp;&nbsp;腾讯微博</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用人人网账号登陆" onclick="UYAN.loginRenren();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用人人网账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/renren.png">&nbsp;&nbsp;人人网</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用网易微博账号登陆" onclick="UYAN.loginT163();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用网易微博账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/t163.png">&nbsp;&nbsp;网易微博</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用搜狐微博账号登陆" onclick="UYAN.loginTSohu();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用搜狐微博账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/tsohu.png">&nbsp;&nbsp;搜狐微博</a></span><span style="height: 16px; float: left; display: block; line-height: 16px; overflow: hidden; width: 60px; margin: 15px 22px 0 25px; display: inline;"><a title="用开心网账号登陆" onclick="UYAN.loginKaixin001();" style="cursor: pointer; font-size: 14px; color: #666; text-decoration: none;"><img title="用开心网账号登陆" border="0" style="display: block; float: left; width: 16px; height: 16px;" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/kaixin001.png">&nbsp;&nbsp;开心网</a></span><div style="clear: both;"></div></div><div id="uyan_vis_login"><h2 style="padding-top: 10px; border-top: 1px solid #ccc; margin: 0; font-size: 14px; font-weight: normal; color: #666; padding-left: 25px; margin-top: 15px; background: none repeat scroll 0 center transparent;">作为游客留言</h2><span style="height: 30px; display: block; padding-left: 54px; overflow: hidden; margin-top: 15px;"><p style="text-indent: 0; display: block; float: left; width: 58px; line-height: 30px; text-align: left; margin: 0; font-size: 14px; color: #666;">Email <span style="color: #ff0000;">*</span></p><input onkeyup="UYAN.syncEN();" onkeydown="UYAN.syncEN();" id="uyan_email_tmp" type="text" style="margin: auto; border: 1px solid #c1c1c1; color: #687793; float: left; height: 24px; line-height: 24px; padding: 2px 8px; width: 230px; border-radius: 5px;"></span><span style="height: 30px; display: block; padding-left: 54px; overflow: hidden; margin-top: 18px;"><p style="text-indent: 0; display: block; float: left; width: 58px; line-height: 30px; text-align: left; margin: 0; font-size: 14px; color: #666;">昵&nbsp;&nbsp;称</p><input onfocus="UYAN.nnbg(&#39;h&#39;);" onblur="UYAN.nnbg(&#39;s&#39;);" id="uyan_uname_tmp" type="text" style="margin: auto; background: #f2f2f2; border: 1px solid #c1c1c1; color: #687793; float: left; height: 24px; line-height: 24px; padding: 2px 8px; width: 230px; border-radius: 5px; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15) inset;"></span><span style="height: 30px; display: block; padding-left: 54px; overflow: hidden; margin-top: 15px; width: 306px;"><div id="uyan_login_warn_tmp" style="color: #ff0000; float: left; font-family: Arial, Helvetica, sans-serif; font-size: 13px; padding-right: 15px; padding-top: 8px; text-align: right; width: 150px;"></div><input onclick="UYAN.loginEmail();" type="submit" style="margin: auto; background: url(&#39;http://v2.uyan.cc/code/images/btn.jpg&#39;) no-repeat; width: 86px; height: 26px; border: none; font-size: 14px; font-weight: bold; color: #666; float: right; cursor: pointer;" value="登录"></span></div></div></div><div style="background-color: #FFFFFF; border-color: #D3D2D2; border-style: solid; border-width: 1px 1px 2px; height: 130px; position: absolute; top: 23px; width: 135px; z-index: 99999; display: none;"><div style="color: #9797C4; font-size: 12px; font-weight: normal; padding: 4px 0 4px 10px; line-height: 18px;">顶并分享到:</div><div style="padding: 3px 0;"><input id="sinaShareBox" style="float: left; margin: 2px 5px 0 10px; padding: 0;" type="checkbox"><div style="background: url(&#39;http://v2.uyan.cc/code/images/tsina.png&#39;) no-repeat scroll 0 0 transparent; color: #494949; float: left; height: 18px; line-height: 18px; font-size: 12px; font-weight: normal; padding-left: 18px;">新浪微博</div><div style="clear: both;"></div></div><div style="padding: 3px 0;"><input id="sinaShareBox" style="float: left; margin: 2px 5px 0 10px; padding: 0;" type="checkbox"><div style="background: url(&#39;http://v2.uyan.cc/code/images/tsina.png&#39;) no-repeat scroll 0 0 transparent; color: #494949; float: left; height: 18px; line-height: 18px; font-size: 12px; font-weight: normal; padding-left: 18px;">新浪微博</div><div style="clear: both;"></div></div><div style="padding: 3px 0;"><input id="sinaShareBox" style="float: left; margin: 2px 5px 0 10px; padding: 0;" type="checkbox"><div style="background: url(&#39;http://v2.uyan.cc/code/images/tsina.png&#39;) no-repeat scroll 0 0 transparent; color: #494949; float: left; height: 18px; line-height: 18px; font-size: 12px; font-weight: normal; padding-left: 18px;">新浪微博</div><div style="clear: both;"></div></div><div style="padding: 5px 0 0 10px;"><a style="border: 1px solid #D0CFCF; background: url(&#39;http://v2.uyan.cc/code/images/buttonLarge.png&#39;) repeat-x; border-radius: 3px 3px 3px 3px; color: #666; font-weight: bold; cursor: pointer; font-weight: normal; float: left; font-size: 12px; height: 20px; line-height: 22px; overflow: hidden; padding: 0 18px;">顶</a><a style="background-color: #FFFFFF; border: 1px solid #FFFFFF; color: #737373; height: 20px; line-height: 22px; overflow: hidden; cursor: pointer; display: block; float: left; font-size: 12px; font-weight: normal; padding: 0 18px;">取消</a><div style="clear: both; height: 1px; overflow: hidden;"></div></div></div></div>
+<script type="text/javascript" id="UYScript" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/iframe.js" async=""></script>
+<!-- UY END -->
+ 
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="http://wonderffee.github.io/blog/2013/10/07/some-macos-tips/" title="Previous Post: 一些MacOS技巧">« 一些MacOS技巧</a>
+      
+      
+        <a class="basic-alignment right" href="http://wonderffee.github.io/blog/2013/10/14/understand-anchorpoint-and-position-with-instance/" title="Next Post: 通过实例来理解position与anchorPoint">通过实例来理解position与anchorPoint »</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section class="odd">
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2015/09/24/auto-build-number/">Xcode自动生成版本号与根据版本号获取Git提交记录哈希值</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2015/08/25/auto-generate-pem-file/">自动化生成APNS PEM文件</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2015/06/05/generate-link-of-current-opened-web-page/">快速生成参考链接</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2015/06/05/solve-macdown-blank-problem/">使用MacDown的一些笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2015/06/04/improve-evernote-editing-capabilities-in-mac/">用AppleScript增强Mac下Evernote的编辑能力</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2014/07/19/quincykit-and-kscrash/">利用QuincyKit + KSCrash构建自己的Crash Log收集与管理系统</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2014/05/17/solve-unrecognized-selector-sent-to-instance-problem/">Unrecognized Selector Sent to Instance问题之诱敌深入关门打狗解决办法</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2014/04/16/hello-i-am-yoyowinwin/">如何让朋友在你的博客上发表文章</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2014/03/23/solve-ie-cannot-surf-internet-problem/">解决IE不能上网问题小记</a>
+      </li>
+    
+      <li class="post">
+        <a href="http://wonderffee.github.io/blog/2013/12/21/capturing-on-interface-rvi0-fails-after-upgrding-to-mavericks/">Capturing on Interface Rvi0 Fails After Upgrding to Mavericks</a>
+      </li>
+    
+  </ul>
+</section>
+<section class="even">
+  <h1>Sina Weibo</h1>
+    <ul id="weibo">
+            <li>
+            <iframe width="100%" height="550" class="share_self" frameborder="0" scrolling="no" src="./彻底理解position与anchorPoint - Wonderffee's Blog_files/index.html" style="display: none !important;"></iframe>
+                      </li>
+                        </ul>
+                        </section>
+  
+</aside>
+
+
+    <span class="toggle-sidebar"></span></div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright © 2015 - wonderffee -
+  <span class="credit">Powered by <a href="http://octopress.org/">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body></html>
