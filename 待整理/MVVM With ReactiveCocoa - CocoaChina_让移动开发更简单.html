@@ -1,0 +1,1002 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <title>MVVM With ReactiveCocoa - CocoaChina_让移动开发更简单</title>
+    <meta name="keywords" content="MVVM,ReactiveCocoaiPhone开发,iOS开发,iPad开发,Mac开发,苹果开发中文站,iPhone开发中文站,CocoaChina首页, Mac OS开发, Cocoa介绍,移动互联网,触控科技,Cocoa,Apple,developer,iOS,iPhone,iPad,iMac,iPod Touch,iPhone5,iPhone4S,iPad3,招聘,iPhone程序员,Objective-c,iPhone应用外包,ios6,ios面试,Cocos2d-x,cocos2d,iTunes,App Store,苹果开发" />
+    <meta name="description" content="CocoaChina前身是全球成立最早规模最大的苹果开发中文站，现致力为所有移动开发者提供资讯服务、问答服务、代码下载、工具库及人才招聘服务" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="baidu-tc-cerfication" content="3300a939a1098c27e94457b75a0bb8c1" />
+    <script type='text/javascript'>
+        function gotoMobilePage() {
+            var sUserAgent = navigator.userAgent.toLowerCase();
+            var agent_iphone = /iphone/i;
+            var agent_android = /android/i;
+            //var agent_ipad = /ipad/i;
+            var agent_ipod = /ipod/i;
+            var agent_wphone = /windows phone/i;
+            if(agent_iphone.test(sUserAgent) || agent_android.test(sUserAgent) || agent_ipod.test(sUserAgent) || agent_wphone.test(sUserAgent)){
+                var re = /\/\w+\/\d+\/(\d+)\.html/, 
+                    result = re.exec(window.location.pathname);
+                if ( result )
+                {
+                    window.location.href = "http://www.cocoachina.com/cms/wap.php?action=article&id=" + result[1];
+                } else {
+                    window.location.href = "http://m.cocoachina.com/";
+                }
+            }
+        }
+        gotoMobilePage(); 
+    </script>
+    <link rel="stylesheet" href="http://cdn.cocimg.com/assets/css/global.css?v=20150818" media="all">
+    <link rel="stylesheet" href="http://cdn.cocimg.com/assets/css/index.css?v=20151015" media="all">
+    <link href="http://cdn.cocimg.com/assets/css/module.css?v=20150906" rel="stylesheet">
+    <link href="http://cdn.cocimg.com/assets/css/style.css?v=20150818" rel="stylesheet">
+    <link href="http://cdn.cocimg.com/assets/css/navheader.css?v=20160301" rel="stylesheet" />
+    <script src="http://cdn.cocimg.com/assets/js/jquery.min.js?v=20150818" type="text/javascript"></script>
+    <script type="text/javascript" src="http://cdn.cocimg.com/assets/js/navbar.js?v=20151013"></script>
+    <script type='text/javascript' src='http://js.adm.cnzz.net/js/abase.js'></script>
+    <script type="text/javascript" src="http://s.csbew.com/k.js"></script>
+    
+</head>
+<body>
+
+    <div class="nav-header">
+            <div class="nav-header-top">
+                <div class="nav-logo nav-fl"><a href="/"><img src="http://cdn.cocimg.com/assets/images/logo.png?v=201510272" /></a></div>
+                <div class="nav-list nav-fl">
+                    <ul>
+                        <li><a href="/news/">资讯</a></li>
+                        <li><a href="/bbs/">论坛</a></li>
+                        <li><a target="_blank" href="http://code.cocoachina.com/" title="CODE">代码</a></li>
+                        <li><a href="http://tools.cocoachina.com" title="工具" target='_blank'>工具</a></li>
+                        <li><a target="_blank" href="http://job.cocoachina.com/" title="JOB">招聘</a></li>
+                        <li><a target="_blank" href="http://cvp.cocos.com/" title="CVP">CVP</a></li>
+                        <li><a target="_blank" href="http://waikuai.cocoachina.com/" title="waikuai">外快</a></li>
+                        <li><a target="_blank" href="http://blog.cocoachina.com/" title="blog">博客</a><span class="new-item-flag">new</span></li>
+                    </ul>
+                </div>
+                <div class="nav-search nav-fl">
+                    <div class="nav-search-flag" style="display:block"><img src="http://cdn.cocimg.com/assets/img/search-icon.png?v=20150825" /></div>
+                    <div class="nav-search-form" style="display:none">
+                        <form action="/cms/plus/search.php" name="formsearch" method="post" target="_blank">
+                            <input type="hidden" name="kwtype" value="0" />
+                            <input type="hidden" name="searchtype" value="titlekeyword" />
+                            <input name="keyword" type="text" placeholder="站内搜索" />
+                            <input type="button" />
+                        </form>
+                    </div>
+                </div>
+                <div class="nav-user nav-fr">
+                    <!-- #region 未登录时显示此区域 -->
+                    <div class="nav-user-login" style="display:block">
+                        <a href="/bbs/login.php">登录</a>|
+                        <a href="/bbs/register.php">注册</a>
+                    </div>
+                    <!-- #endregion -->
+                    <!-- #region 已登录时显示此区域 -->
+                    <div class="nav-user-name" style="display:none">
+                        <div><alert></alert><img src="/assets/img/user.png" />Guest</div>
+                        <ul>
+                            <li><a href="#"><img src="/assets/img/i-man.png" />我的主页</a></li>
+                            <li><alert></alert><a href="#"><img src="/assets/img/i-mail.png" />我的消息</a></li>
+                            <li><a href="#"><img src="/assets/img/i-setting.png" />账户设置</a></li>
+                            <li><a href="index-offline.html"><img src="/assets/img/i-logout.png" />退出</a></li>
+                        </ul>
+                    </div>
+                    <!-- #endregion -->
+                </div>
+                <div class="nav-clear"></div>
+            </div>
+        <div class="nav-header-bottom">
+            <ul>
+                <li><a id="ios" href="/ios/" title="ios">iOS开发</a></li>
+                <li><a id="swift" href="/swift/" title="swift">Swift</a></li>
+                <li><a id="app_store" href="/appstore/" title="appstore">App Store研究</a></li>
+                <li><a id="design" href="/design/" title="design">产品设计</a></li>
+                <li><a id="review" href="/review/" title="review">应用</a></li>
+                <li><a id="review" href="/vr/" title="review">VR</a></li>
+                <li><a id="game" href="/game/" title="game">游戏开发</a></li>
+                <li><a id="apple" href="/apple/" title="apple">苹果相关</a></li>
+                <!-- <li><a id="cocos" href="/cocos/" title="cocos">Cocos引擎</a></li>-->
+                <!--<li><a id="webapp" href="/webapp/" title="HTML5">HTML5</a></li>-->
+                <li><a id="android" href="/android/" title="android">安卓相关</a></li>
+                <li><a id="market" href="/market/" title="market">营销推广</a></li>
+                <li><a id="industry" href="/industry/" title="industry">业界动态</a></li>
+                <li><a id="programmer" href="/programmer/" title="programmer">程序人生</a></li>
+            </ul>
+        </div>
+    </div>
+<script language="javascript">
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPod");
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }
+        }
+        return flag;
+    }
+    if (!IsPC()){
+           window.location.href = "http://www.cocoachina.com/cms/wap.php?action=article&id=15823";
+    }
+
+</script>
+<!--middle-->
+<div class="middle clearfix">
+    <div class="m-wrap">
+        <div class="m-ad2" style="margin-top:12px;">
+            <div class="ad2-l">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- CC首页底部左侧72890 -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:728px;height:90px"
+                     data-ad-client="ca-pub-1180518835303646"
+                     data-ad-slot="8012423965"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            <div class="ad2-r">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- CC资讯页25090 -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:250px;height:90px"
+                     data-ad-client="ca-pub-1180518835303646"
+                     data-ad-slot="9489157162"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        <!--left-->
+        <div class="detail-left float-l">
+            <p class="crumbs"><a href="/" title="首页">首页</a> &gt;</span><a href="/ios" title="iOS开发"><span id="type_name">iOS开发</span></a></p>
+            <div class="detail-main">
+                <h2>MVVM With ReactiveCocoa</h2>
+                <div class="p-ico clearfix">
+                    <div>
+                        <span class="ml0">2016-03-30 06:16</span>
+                        <span>编辑：
+                        <a href="" id="field_author" target="_blank">suiling</a></span>
+                        <span>分类：<a href="/ios/" target="_blank">iOS开发</a></span>
+                        <span id="source">来源：<a href="http://blog.leichunfeng.com/blog/2016/02/27/mvvm-with-reactivecocoa/" target="_blank">雷纯锋的博客</a></span>
+
+                        <div class="float-r">
+                            <span id="artical_comment_cnt"><i></i></span>
+                            <span><i class="view"></i><script src="/cms/plus/count.php?view=yes&aid=15823&mid=17" language="javascript"></script></span>
+                    </div>
+                    </div>
+                </div>
+                <div class="p-ico clearfix">
+                    <p class="related float-l"><a href="/cms/tags.php?/ReactiveCocoa/" target="_blank">ReactiveCocoa</a><a href="/cms/tags.php?/MVVM/" target="_blank">MVVM</a></p>
+                    <input type="hidden" id="article_id"  value="15823"/>
+                </div>
+                <div class="adsbox clearfix">
+                    <div class="float-l">
+                        <div class="float-l"><b>招聘信息：</b></div>
+                        <ul class="float-l" id="invitelist" style="margin-top: 0px;">
+                            <li><a href='http://job.cocoachina.com/job/show?id=67500' target='_blank'>Web后端高级开发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67499' target='_blank'>iOS软件工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67498' target='_blank'>java高级软件工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67819' target='_blank'>高级iOS开发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67573' target='_blank'>高级PHP开发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67779' target='_blank'>iOS高级研发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67534' target='_blank'>iOS开发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67768' target='_blank'>高级iOS手机应用软件开发工程师（培训讲师）</a></li><li><a href='http://job.cocoachina.com/job/show?id=67770' target='_blank'>高级Cocos2d-x游戏开发工程师（培训讲师）</a></li><li><a href='http://job.cocoachina.com/job/show?id=67462' target='_blank'>iOS手机软件开发工程师</a></li><li><a href='http://job.cocoachina.com/job/show?id=67159' target='_blank'>资深iOS开发工程师</a></li>
+                            <!--<script src="http://www.cocoachina.com/bbs/new.php?action=article&fidin=26&digest=0&postdate=0&author=0&fname=0&hits=0&replies=0&pre=1&num=3&length=120&order=2" charset="gbk"></script>-->
+                        </ul>
+                    </div>
+                    <div class="float-r">
+                        <a href="javascript:void(0)" class="prev"></a>
+                        <a href="javascript:void(0)" class="next"></a>
+                    </div>
+                </div>
+                <div id="detailbody" class="field_body">
+                    <p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459245171983034.png" title="1459245171983034.png" alt="47.png"/></p><p>作者：<a href="http://weibo.com/leichunfeng" target="_blank">@雷纯锋2011</a></p><p><a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel" target="_blank">MVVM </a>是一种软件架构模式，它是 <a href="https://en.wikipedia.org/wiki/Martin_Fowler" target="_blank">Martin Fowler</a> 的 <a href="http://martinfowler.com/eaaDev/PresentationModel.html" target="_blank">Presentation Model</a> 的一种变体，最先由微软的架构师 John Gossman 在 2005 年提出，并应用在微软的 <a href="https://en.wikipedia.org/wiki/Windows_Presentation_Foundation" target="_blank">WPF</a> 和 <a href="https://en.wikipedia.org/wiki/Microsoft_Silverlight" target="_blank">Silverlight</a> 软件开发中。MVVM 衍生于 <a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="_blank">MVC</a> ，是对 MVC 的一种演进，它促进了 UI 代码与业务逻辑的分离。</p><p>说明：本文将采用理论与实践相结合的方式，重点介绍一个使用 MVVM 和 RAC 开发的 iOS 开源项目 <a href="https://github.com/leichunfeng/MVVMReactiveCocoa" target="_blank">MVVMReactiveCocoa</a> ，目的是希望能为你实践 MVVM 提供帮助。不过，在正式开始介绍正文之前，请你先思考以下三个问题：</p><ul class=" list-paddingleft-2" ><li><p>MVC 与 MVVM 有什么异同点，MVC 到 MVVM 是怎样演进的；</p></li><li><p>RAC 在 MVVM 中扮演什么样的角色，MVVM 是否一定要结合 RAC 使用；</p></li><li><p>如何将一个现有的 MVC 应用转变成一个 MVVM 应用，有哪些需要注意的地方。</p></li></ul><p>带着以上问题，我们一起进入正文。</p><p>名词解释：本文中的 RAC 为 ReactiveCocoa 的缩写。</p><p><span style="font-size: 16px; color: rgb(0, 176, 80);"><strong>MVC</strong></span></p><p>MVC 是 iOS 开发中使用最普遍的架构模式，同时也是苹果官方推荐的架构模式。MVC 代表的是 Model–view–controller ，它们之间的关系如下：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459245048970718.png" title="1459245048970718.png" alt="QQ截图20160329185037.png"/></p><p>是的，MVC 看上去棒极了，model 代表数据，view 代表 UI ，而 controller 则负责协调它们两者之间的关系。然而，尽管从技术上看 view 和 controller 是相互独立的，但事实上它们几乎总是结对出现，一个 view 只能与一个 controller 进行匹配，反之亦然。既然如此，那我们为何不将它们看作一个整体呢：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459245033321783.png" title="1459245033321783.png" alt="QQ截图20160329185020.png"/></p><p>因此，M-VC 可能是对 iOS 中的 MVC 模式更为准确的解读。在一个典型的 MVC 应用中，controller 由于承载了过多的逻辑，往往会变得臃肿不堪，所以 MVC 也经常被人调侃成 Massive View Controller ：</p><p><span style="font-size: 18px; color: rgb(89, 89, 89);">iOS architecture, where MVC stands for Massive View Controller.</span></p><p>坦白说，有一部分逻辑确实是属于 controller 的，但是也有一部分逻辑是不应该被放置在 controller 中的。比如，将 model 中的 NSDate 转换成 view 可以展示的 NSString 等。在 MVVM 中，我们将这些逻辑统称为展示逻辑。</p><p><span style="color: rgb(0, 176, 80); font-size: 16px;"><strong>MVVM</strong></span></p><p>因此，一种可以很好地解决 Massive View Controller 问题的办法就是将 controller 中的展示逻辑抽取出来，放置到一个专门的地方，而这个地方就是 viewModel 。其实，我们只要在上图中的 M-VC 之间放入 VM ，就可以得到 MVVM 模式的结构图：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244973423237.png" title="1459244973423237.png" alt="QQ截图20160329184921.png"/></p><p><span style="line-height: 1.8;">从上图中，我们可以非常清楚地看到 MVVM 中四个组件之间的关系。注：除了 view 、viewModel 和 model 之外，MVVM 中还有一个非常重要的隐含组件 binder ：</span></p><ul class=" list-paddingleft-2" ><li><p>view ：由 MVC 中的 view 和 controller 组成，负责 UI 的展示，绑定 viewModel 中的属性，触发 viewModel 中的命令；</p></li><li><p>viewModel ：从 MVC 的 controller 中抽取出来的展示逻辑，负责从 model 中获取 view 所需的数据，转换成 view 可以展示的数据，并暴露公开的属性和命令供 view 进行绑定；</p></li><li><p>model ：与 MVC 中的 model 一致，包括数据模型、访问数据库的操作和网络请求等；</p></li><li><p>binder ：在 MVVM 中，声明式的数据和命令绑定是一个隐含的约定，它可以让开发者非常方便地实现 view 和 viewModel 的同步，避免编写大量繁杂的样板化代码。在微软的 MVVM 实现中，使用的是一种被称为 <a href="https://en.wikipedia.org/wiki/Extensible_Application_Markup_Language" target="_blank">XAML</a> 的标记语言。</p></li></ul><p><span style="color: rgb(0, 176, 80); font-size: 16px;"><strong>ReactiveCocoa</strong></span></p><p>尽管，在 iOS 开发中，系统并没有提供类似的框架可以让我们方便地实现 binder 功能，不过，值得庆幸的是，GitHub 开源的 RAC ，给了我们一个非常不错的选择。</p><p>RAC 是一个 iOS 中的函数式响应式编程框架，它受 <a href="https://en.wikipedia.org/wiki/Functional_reactive_programming" target="_blank">Functional Reactive Programming</a> 的启发，是 <a href="https://github.com/jspahrsummers" target="_blank">Justin Spahr-Summers</a> 和 <a href="https://github.com/joshaber" target="_blank">Josh Abernathy</a> 在开发 <a href="https://desktop.github.com/" target="_blank">GitHub for Mac</a> 过程中的一个副产品，它提供了一系列用来组合和转换值流的 API 。如需了解更多关于 RAC 的信息，可以阅读我的上一篇文章《<a href="http://blog.leichunfeng.com/blog/2015/12/25/reactivecocoa-v2-dot-5-yuan-ma-jie-xi-zhi-jia-gou-zong-lan/" target="_blank">ReactiveCocoa v2.5 源码解析之架构总览</a>》。</p><p>在 iOS 的 MVVM 实现中，我们可以使用 RAC 来在 view 和 viewModel 之间充当 binder 的角色，优雅地实现两者之间的同步。此外，我们还可以把 RAC 用在 model 层，使用 Signal 来代表异步的数据获取操作，比如读取文件、访问数据库和网络请求等。说明，RAC 的后一个应用场景是与 MVVM 无关的，也就是说，我们同样可以在 MVC 的 model 层这么用。</p><p><span style="color: rgb(0, 176, 80); font-size: 16px;"><strong>小结</strong></span></p><p>综上所述，我们只要将 MVC 中的 controller 中的展示逻辑抽取出来，放置到 viewModel 中，然后通过一定的技术手段，比如 RAC 来同步 view 和 viewModel ，就完成了 MVC 到 MVVM 的转变。</p><p><span style="font-size: 18px; color: rgb(89, 89, 89);">Talk is cheap. Show me the code.</span></p><p>下面，我们直接上代码，一起来看一个 MVC 模式转换成 MVVM 模式的示例。首先是 model 层的代码 Person ：</p><pre class="brush:js;toolbar:false">@interface&nbsp;Person&nbsp;:&nbsp;NSObject
+
+-&nbsp;(instancetype)initwithSalutation:(NSString&nbsp;*)salutation&nbsp;firstName:(NSString&nbsp;*)firstName&nbsp;lastName:(NSString&nbsp;*)lastName&nbsp;birthdate:(NSDate&nbsp;*)birthdate;
+
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSString&nbsp;*salutation;
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSString&nbsp;*firstName;
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSString&nbsp;*lastName;
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSDate&nbsp;*birthdate;
+
+@end</pre><p>然后是 view 层的代码 PersonViewController ，在 viewDidLoad 方法中，我们将 Person 中的属性进行一定的转换后，赋值给相应的 view 进行展示：</p><pre class="brush:js;toolbar:false">-&nbsp;(void)viewDidLoad&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];
+
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self.model.salutation.length&nbsp;>&nbsp;0)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.nameLabel.text&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@&nbsp;%@&nbsp;%@",&nbsp;self.model.salutation,&nbsp;self.model.firstName,&nbsp;self.model.lastName];
+&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.nameLabel.text&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@&nbsp;%@",&nbsp;self.model.firstName,&nbsp;self.model.lastName];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;NSDateFormatter&nbsp;*dateFormatter&nbsp;=&nbsp;[[NSDateFormatter&nbsp;alloc]&nbsp;init];
+&nbsp;&nbsp;&nbsp;&nbsp;[dateFormatter&nbsp;setDateFormat:@"EEEE&nbsp;MMMM&nbsp;d,&nbsp;yyyy"];
+&nbsp;&nbsp;&nbsp;&nbsp;self.birthdateLabel.text&nbsp;=&nbsp;[dateFormatter&nbsp;stringFromDate:model.birthdate];
+}</pre><p>接下来，我们引入一个 viewModel ，将 PersonViewController 中的展示逻辑抽取到这个 PersonViewModel 中：</p><pre class="brush:js;toolbar:false">@interface&nbsp;PersonViewModel&nbsp;:&nbsp;NSObject
+
+-&nbsp;(instancetype)initWithPerson:(Person&nbsp;*)person;
+
+@property&nbsp;(nonatomic,&nbsp;strong,&nbsp;readonly)&nbsp;Person&nbsp;*person;
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSString&nbsp;*nameText;
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSString&nbsp;*birthdateText;
+
+@end
+
+@implementation&nbsp;PersonViewModel
+
+-&nbsp;(instancetype)initWithPerson:(Person&nbsp;*)person&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;=&nbsp;[super&nbsp;init];
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_person&nbsp;=&nbsp;person;
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(person.salutation.length&nbsp;>&nbsp;0)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_nameText&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@&nbsp;%@&nbsp;%@",&nbsp;self.person.salutation,&nbsp;self.person.firstName,&nbsp;self.person.lastName];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;else&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_nameText&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"%@&nbsp;%@",&nbsp;self.person.firstName,&nbsp;self.person.lastName];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSDateFormatter&nbsp;*dateFormatter&nbsp;=&nbsp;[[NSDateFormatter&nbsp;alloc]&nbsp;init];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[dateFormatter&nbsp;setDateFormat:@"EEEE&nbsp;MMMM&nbsp;d,&nbsp;yyyy"];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_birthdateText&nbsp;=&nbsp;[dateFormatter&nbsp;stringFromDate:person.birthdate];
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self;
+}
+
+@end</pre><p>最终，PersonViewController 将会变得非常轻量级：</p><pre class="brush:js;toolbar:false">-&nbsp;(void)viewDidLoad&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;viewDidLoad];
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;self.nameLabel.text&nbsp;=&nbsp;self.viewModel.nameText;
+&nbsp;&nbsp;&nbsp;&nbsp;self.birthdateLabel.text&nbsp;=&nbsp;self.viewModel.birthdateText;
+}</pre><p>怎么样？其实 MVVM 并没有想像中的那么难吧，而且更重要的是它也没有破坏 MVC 的现有结构，只不过是移动了一些代码，仅此而已。好了，说了这么多，那 MVVM 相比 MVC 到底有哪些好处呢？我想，主要可以归纳为以下三点：</p><ul class=" list-paddingleft-2" ><li><p>由于展示逻辑被抽取到了 viewModel 中，所以 view 中的代码将会变得非常轻量级；</p></li><li><p>由于 viewModel 中的代码是与 UI 无关的，所以它具有良好的可测试性；</p></li><li><p>对于一个封装了大量业务逻辑的 model 来说，改变它可能会比较困难，并且存在一定的风险。在这种场景下，viewModel 可以作为 model 的适配器使用，从而避免对 model 进行较大的改动。</p></li></ul><p>通过前面的示例，我们对第一点已经有了一定的感触；至于第三点，可能对于一个复杂的大型应用来说，才会比较明显；下面，我们还是使用前面的示例，来直观地感受下第二点好处：</p><pre class="brush:js;toolbar:false">SpecBegin(Person)
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*salutation&nbsp;=&nbsp;@"Dr.";
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*firstName&nbsp;=&nbsp;@"first";
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*lastName&nbsp;=&nbsp;@"last";
+&nbsp;&nbsp;&nbsp;&nbsp;NSDate&nbsp;*birthdate&nbsp;=&nbsp;[NSDate&nbsp;dateWithTimeIntervalSince1970:0];
+
+&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;(@"should&nbsp;use&nbsp;the&nbsp;salutation&nbsp;available.&nbsp;",&nbsp;^{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Person&nbsp;*person&nbsp;=&nbsp;[[Person&nbsp;alloc]&nbsp;initWithSalutation:salutation&nbsp;firstName:firstName&nbsp;lastName:lastName&nbsp;birthdate:birthdate];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PersonViewModel&nbsp;*viewModel&nbsp;=&nbsp;[[PersonViewModel&nbsp;alloc]&nbsp;initWithPerson:person];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(viewModel.nameText).to.equal(@"Dr.&nbsp;first&nbsp;last");
+&nbsp;&nbsp;&nbsp;&nbsp;});
+
+&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;(@"should&nbsp;not&nbsp;use&nbsp;an&nbsp;unavailable&nbsp;salutation.&nbsp;",&nbsp;^{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Person&nbsp;*person&nbsp;=&nbsp;[[Person&nbsp;alloc]&nbsp;initWithSalutation:nil&nbsp;firstName:firstName&nbsp;lastName:lastName&nbsp;birthdate:birthdate];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PersonViewModel&nbsp;*viewModel&nbsp;=&nbsp;[[PersonViewModel&nbsp;alloc]&nbsp;initWithPerson:person];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(viewModel.nameText).to.equal(@"first&nbsp;last");
+&nbsp;&nbsp;&nbsp;&nbsp;});
+
+&nbsp;&nbsp;&nbsp;&nbsp;it&nbsp;(@"should&nbsp;use&nbsp;the&nbsp;correct&nbsp;date&nbsp;format.&nbsp;",&nbsp;^{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Person&nbsp;*person&nbsp;=&nbsp;[[Person&nbsp;alloc]&nbsp;initWithSalutation:nil&nbsp;firstName:firstName&nbsp;lastName:lastName&nbsp;birthdate:birthdate];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PersonViewModel&nbsp;*viewModel&nbsp;=&nbsp;[[PersonViewModel&nbsp;alloc]&nbsp;initWithPerson:person];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expect(viewModel.birthdateText).to.equal(@"Thursday&nbsp;January&nbsp;1,&nbsp;1970");
+&nbsp;&nbsp;&nbsp;&nbsp;});
+SpecEnd</pre><p>对于 MVVM 来说，我们可以把 view 看作是 viewModel 的可视化形式，viewModel 提供了 view 所需的数据和命令。因此，viewModel 的可测试性可以帮助我们极大地提高应用的质量。</p><p><span style="color: rgb(0, 176, 80); font-size: 16px;"><strong>MVVMReactiveCocoa</strong></span></p><p>接下来，我们进入本文的第二部分，重点介绍一个使用 MVVM 和 RAC 开发的开源项目 MVVMReactiveCocoa 。说明，本文将主要介绍这个应用的架构和设计思路，希望可以为你实践 MVVM 提供一个真实的参考案例，有些架构并非是 MVVM 所必须的，而是我们为了更顺畅地使用 MVVM 而引入的，特别是 ViewModel-Based Navigation 。所以，请你在实践的过程中能够结合自身应用的实际情况做出相应的取舍，灵活处理。最后，我们将以登录界面为例，一起探讨下 MVVM 的实践思路。</p><p>说明，以下内容均基于 MVVMReactiveCocoa 的 v2.1.1 标签进行展开，并且对部分无关代码做了删减。</p><p><strong>类图</strong></p><p>为了方便我们从宏观上了解 MVVMReactiveCocoa 的整体结构，我们先来看看它的类图：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244471434578.png" title="1459244471434578.png" alt="MVVMReactiveCocoa-v2.1.1.png"/></p><p>MVVMReactiveCocoa-v2.1.1</p><p>从上图中，我们可以看到，在 MVVMReactiveCocoa 中主要有两大继承体系：</p><ul class=" list-paddingleft-2" ><li><p>用蓝色标识出来的 viewModel 的继承体系，基类为 MRCViewModel ；</p></li><li><p>用红色标识出来的 view 的继承体系，基类为 MRCViewController 。</p></li></ul><p>除了提供与系统基类 UIViewController 相对应的基类 MRCViewModel/MRCViewController 外，还提供了与系统基类 UITableViewController 和 UITabBarController 相对应的基类 MRCTableViewModel/MRCTableViewController 和 MRCTabBarViewModel/MRCTabBarController ，其中基类 MRCTableViewModel/MRCTableViewController 的使用最为普遍。</p><p>说明，之所以通过基类的方式来组织 MVVMReactiveCocoa ，一方面是因为主要开发者只有我一个人，这个方案非常容易实施；另一方面是因为通过基类的方式可以尽可能简单地实现代码重用，提高开发效率。</p><p><strong>服务总线</strong></p><p>经过前面的探讨，我们已经知道了 MVVM 中的 viewModel 的主要职责就是从 model 层获取 view 所需的数据，并且将这些数据转换成 view 能够展示的形式。因此，为了方便 viewModel 层调用 model 层中的所有服务，并且统一管理这些服务的创建，我使用抽象工厂模式将 model 层的所有服务集中管理了起来，结构图如下：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244405711667.png" title="1459244405711667.png" alt="QQ截图20160329183952.png"/></p><p>从上图中，我们可以看出，在服务总线类 MRCViewModelServices/MRCViewModelServicesImpl 中，主要包括以下三个方面的内容：</p><ul class=" list-paddingleft-2" ><li><p>应用自有的服务类，用柚黄色进行了标识，包括 MRCAppStoreService/MRCAppStoreServiceImpl 和 MRCRepositoryService/MRCRepositoryServiceImpl 两个服务类；</p></li><li><p>第三方 GitHub 提供的 API 框架，用天蓝色进行了标识，主要包括 OCTClient 服务类；</p></li><li><p>应用的导航服务，用藻绿色进行了标识，包括 MRCNavigationProtocol 协议和实现类 MRCViewModelServicesImpl 等。</p></li></ul><p>其中，前两者都是以信号的形式对 viewModel 层提供服务，代表异步的网络请求等数据获取操作，而我们在 viewModel 层则可以通过订阅信号的形式获取到所需的数据。此外，服务总线还实现了 MRCNavigationProtocol 协议，它的内容如下：</p><pre class="brush:js;toolbar:false">@protocol&nbsp;MRCNavigationProtocol&nbsp;[NSObject]（因识别问题，这里用方括号代替尖括号）
+
+-&nbsp;(void)pushViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;animated:(BOOL)animated;
+
+-&nbsp;(void)popViewModelAnimated:(BOOL)animated;
+
+-&nbsp;(void)popToRootViewModelAnimated:(BOOL)animated;
+
+-&nbsp;(void)presentViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;animated:(BOOL)animated&nbsp;completion:(VoidBlock)completion;
+
+-&nbsp;(void)dismissViewModelAnimated:(BOOL)animated&nbsp;completion:(VoidBlock)completion;
+
+-&nbsp;(void)resetRootViewModel:(MRCViewModel&nbsp;*)viewModel;
+
+@end</pre><p>看上去是不是有点眼熟？是的，MRCNavigationProtocol 协议其实就是参照系统的导航操作定义出来的，用来实现 ViewModel-Based 的导航服务。注意，服务总线类 MRCViewModelServicesImpl 其实并没有真正实现 MRCNavigationProtocol 协议中声明的操作，只不过是实现了一些空操作而已：</p><pre class="brush:js;toolbar:false">-&nbsp;(void)pushViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;animated:(BOOL)animated&nbsp;{}
+
+-&nbsp;(void)popViewModelAnimated:(BOOL)animated&nbsp;{}
+
+-&nbsp;(void)popToRootViewModelAnimated:(BOOL)animated&nbsp;{}
+
+-&nbsp;(void)presentViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;animated:(BOOL)animated&nbsp;completion:(VoidBlock)completion&nbsp;{}
+
+-&nbsp;(void)dismissViewModelAnimated:(BOOL)animated&nbsp;completion:(VoidBlock)completion&nbsp;{}
+
+-&nbsp;(void)resetRootViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;{}</pre><p>那么，我们是怎么实现 ViewModel-Based 的导航操作的呢？用 MRCViewModelServicesImpl 来实现这些空操作到底有什么用意？为什么要这么做，目的是为了什么？兄台，莫急，请接着看下一小节的内容。</p><p><strong>ViewModel-Based Navigation</strong></p><p>我们先来思考一个问题，就是我们为什么要实现 ViewModel-Based 的导航操作呢？直接在 view 层使用系统的 push/present 等操作来完成导航不就好了么？我总结了一下这么做的理由，主要有以下三点：</p><ul class=" list-paddingleft-2" ><li><p>从理论上来说，MVVM 模式的应用应该是以 viewModel 为驱动来运转的；</p></li><li><p>根据我们前面对 MVVM 的探讨，viewModel 提供了 view 所需的数据和命令。因此，我们往往可以直接在命令执行成功后使用 doNext 顺带就把导航操作给做了，一气呵成；</p></li><li><p>这样可以使 view 更加轻量级，只需要绑定 viewModel 提供的数据和命令即可。</p></li></ul><p>既然如此，那我们究竟要如何实现 ViewModel-Based 的导航操作呢？我们都知道 iOS 中的导航操作无外乎两种，push/pop 和 present/dismiss ，前者是 UINavigationController 特有的功能，而后者是所有 UIViewController 都具备的功能。注意，UINavigationController 也是 UIViewController 的子类，所以它也同样具备 present/dismiss 的功能。因此，从本质上来说，不管我们要实现什么样的导航操作，最终都是离不开 push/pop 和 present/dismiss 的。</p><p>目前，MVVMReactiveCocoa 的做法是在 view 层维护一个 NavigationController 的堆栈 MRCNavigationControllerStack ，不管是 push/pop 还是 present/dismiss ，都使用栈顶的 NavigationController 来执行导航操作，并且保证 present 出来的是一个 NavigationController 。</p><p>接下来，我们一起来看看 MVVMReactiveCocoa 在执行了 push/pop 或 present/dismiss 操作后视图层次结构的变化过程。首先，我们来看看用户在登录成功后进入到首页时应用的视图层次结构图：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244291673298.png" title="1459244291673298.png" alt="QQ截图20160329183758.png"/></p><p>此时，应用展示的界面是 NewsViewController 。在 MRCNavigationControllerStack 堆栈中只有 NavigationController0 一个元素；而 NavigationController1 并没有在 MRCNavigationControllerStack 堆栈中，这是因为需要支持 TabBarController 的滑动切换而设计的视图层次结构，是首页比较特殊的一个地方。更多信息可以查看 GitHub 开源库 WXTabBarController ，在这里，我们不用太过于关心这个问题，只需要理解原理就好了。</p><p>接下来，当用户在 NewsViewController 界面，点击了某一个 cell ，通过 push 的方式，进入到仓库详情界面时，应用的视图层次结构图如下：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244270214511.png" title="1459244270214511.png" alt="QQ截图20160329183740.png"/></p><p>应用通过 MRCNavigationControllerStack 栈顶的元素 NavigationController0 ，将仓库详情界面 push 到了自身的堆栈中。此时，应用展示的界面是被 push 进来的仓库详情界面 RepoDetailViewController 。最后，当用户在仓库详情界面，点击左下角的切换分支按钮，通过 present 的方式，弹出分支选择界面时，应用的视图层次结构图如下：</p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244254730247.png" title="1459244254730247.png" alt="view-model-based3.png"/></p><p>应用通过 MRCNavigationControllerStack 栈顶的元素 NavigationController0 ，将 NavigationController5 以 present 的方式弹出来。此时，应用展示的是 NavigationController5 的根视图 SelectBranchOrTagViewController 。说明，由于 pop 和 dismiss 与 push 和 present 互为逆操作，所以只要按照从下到上的顺序看上面的视图层次结构图即可，这里不再赘述。</p><p>等等，如果我没有记错的话，MRCNavigationControllerStack 堆栈是在 view 层，而服务总线类 MRCViewModelServicesImpl 是在 viewModel 层的。据我所知，viewModel 层是不能引入 view 层的任何东西的，更严格的说，是不能引入任何 UIKit 中的东西的，否则就违背了 MVVM 的基本原则，并且也会散失 viewModel 的可测试性。在这个前提下，你要如何让这两者产生关联呢？</p><p>没错，这就是 MRCViewModelServicesImpl 中之所以实现那些空操作的目的所在了。viewModel 通过调用 MRCViewModelServicesImpl 中的空操作来表明需要执行相应的导航操作，而 MRCNavigationControllerStack 则通过 Hook 来捕获这些空操作，然后使用栈顶的 NavigationController 来执行真正的导航操作：</p><pre class="brush:js;toolbar:false">-&nbsp;(void)registerNavigationHooks&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;@weakify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(pushViewModel:animated:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIViewController&nbsp;*viewController&nbsp;=&nbsp;(UIViewController&nbsp;*)[MRCRouter.sharedInstance&nbsp;viewControllerForViewModel:tuple.first];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.navigationControllers.lastObject&nbsp;pushViewController:viewController&nbsp;animated:[tuple.second&nbsp;boolValue]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(popViewModelAnimated:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.navigationControllers.lastObject&nbsp;popViewControllerAnimated:[tuple.first&nbsp;boolValue]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(popToRootViewModelAnimated:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.navigationControllers.lastObject&nbsp;popToRootViewControllerAnimated:[tuple.first&nbsp;boolValue]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(presentViewModel:animated:completion:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIViewController&nbsp;*viewController&nbsp;=&nbsp;(UIViewController&nbsp;*)[MRCRouter.sharedInstance&nbsp;viewControllerForViewModel:tuple.first];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UINavigationController&nbsp;*presentingViewController&nbsp;=&nbsp;self.navigationControllers.lastObject;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(![viewController&nbsp;isKindOfClass:UINavigationController.class])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;viewController&nbsp;=&nbsp;[[MRCNavigationController&nbsp;alloc]&nbsp;initWithRootViewController:viewController];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;pushNavigationController:(UINavigationController&nbsp;*)viewController];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[presentingViewController&nbsp;presentViewController:viewController&nbsp;animated:[tuple.second&nbsp;boolValue]&nbsp;completion:tuple.third];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(dismissViewModelAnimated:completion:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;popNavigationController];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.navigationControllers.lastObject&nbsp;dismissViewControllerAnimated:[tuple.first&nbsp;boolValue]&nbsp;completion:tuple.second];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[(NSObject&nbsp;*)self.services
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForSelector:@selector(resetRootViewModel:)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(RACTuple&nbsp;*tuple)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.navigationControllers&nbsp;removeAllObjects];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIViewController&nbsp;*viewController&nbsp;=&nbsp;(UIViewController&nbsp;*)[MRCRouter.sharedInstance&nbsp;viewControllerForViewModel:tuple.first];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(![viewController&nbsp;isKindOfClass:[UINavigationController&nbsp;class]])&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;viewController&nbsp;=&nbsp;[[MRCNavigationController&nbsp;alloc]&nbsp;initWithRootViewController:viewController];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((UINavigationController&nbsp;*)viewController).delegate&nbsp;=&nbsp;self;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;pushNavigationController:(UINavigationController&nbsp;*)viewController];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MRCSharedAppDelegate.window.rootViewController&nbsp;=&nbsp;viewController;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+}</pre><p>通过 Hook 的方式，我们最终实现了 ViewModel-Based 的导航操作，并且在 viewModel 层中也没有引入 view 层的任意东西，实现了解耦合。</p><p><strong>Router</strong></p><p>还有一点值得一提的是，我们在 viewModel 中调用导航操作的时候，只传入了 viewModel 的实例作为参数，那么我们在 MRCNavigationControllerStack 中执行真正的导航操作时，怎么才能知道要跳转到哪个界面呢？为此，我们配置了一个从 viewModel 到 view 的映射，并且约定了一个统一的初始化 view 的方法 initWithViewModel: ：</p><pre class="brush:js;toolbar:false">-&nbsp;(MRCViewController&nbsp;*)viewControllerForViewModel:(MRCViewModel&nbsp;*)viewModel&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*viewController&nbsp;=&nbsp;self.viewModelViewMappings[NSStringFromClass(viewModel.class)];
+
+&nbsp;&nbsp;&nbsp;&nbsp;NSParameterAssert([NSClassFromString(viewController)&nbsp;isSubclassOfClass:[MRCViewController&nbsp;class]]);
+&nbsp;&nbsp;&nbsp;&nbsp;NSParameterAssert([NSClassFromString(viewController)&nbsp;instancesRespondToSelector:@selector(initWithViewModel:)]);
+
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;[[NSClassFromString(viewController)&nbsp;alloc]&nbsp;initWithViewModel:viewModel];
+}
+
+-&nbsp;(NSDictionary&nbsp;*)viewModelViewMappings&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@"MRCLoginViewModel":&nbsp;@"MRCLoginViewController",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@"MRCHomepageViewModel":&nbsp;@"MRCHomepageViewController",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@"MRCRepoDetailViewModel":&nbsp;@"MRCRepoDetailViewController",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;};
+}</pre><p><strong>登录界面</strong></p><p>最后，我们一起来看看登录界面中 viewModel 和 view 的部分关键代码，探讨一下 MVVM 的具体实践过程。说明，我们将会尽可能地回避具体的业务逻辑，重点关注 MVVM 的实践思路。下面是登录界面的截图：</p><p></p><p style="text-align:center"><img src="http://cc.cocimg.com/api/uploads/20160329/1459244064258644.jpg" title="1459244064258644.jpg" alt="login.jpg"/></p><p>其中，主要的界面元素有：</p><ul class=" list-paddingleft-2" ><li><p>一个用于展示用户头像的按钮 avatarButton ；</p></li><li><p>用于输入账号和密码的输入框 usernameTextField 和 passwordTextField ；</p></li><li><p>一个直接登录的按钮 loginButton 和一个跳转到浏览器授权登录的按钮 browserLoginButton 。</p></li></ul><p>分析：根据我们前面对 MVVM 的探讨，viewModel 需要提供 view 所需的数据和命令。因此，MRCLoginViewModel.h 头文件的内容大致如下：</p><pre class="brush:js;toolbar:false">@interface&nbsp;MRCLoginViewModel&nbsp;:&nbsp;MRCViewModel
+
+@property&nbsp;(nonatomic,&nbsp;copy,&nbsp;readonly)&nbsp;NSURL&nbsp;*avatarURL;
+@property&nbsp;(nonatomic,&nbsp;copy)&nbsp;NSString&nbsp;*username;
+@property&nbsp;(nonatomic,&nbsp;copy)&nbsp;NSString&nbsp;*password;
+
+@property&nbsp;(nonatomic,&nbsp;strong,&nbsp;readonly)&nbsp;RACSignal&nbsp;*validLoginSignal;
+@property&nbsp;(nonatomic,&nbsp;strong,&nbsp;readonly)&nbsp;RACCommand&nbsp;*loginCommand;
+@property&nbsp;(nonatomic,&nbsp;strong,&nbsp;readonly)&nbsp;RACCommand&nbsp;*browserLoginCommand;
+
+@end</pre><p>非常直观，其中需要特别说明的是 validLoginSignal 属性代表的是登录按钮是否可用，它将会与 view 中登录按钮的 enabled 属性进行绑定。接着，我们来看看 MRCLoginViewModel.m 的实现文件中的部分关键代码：</p><pre class="brush:js;toolbar:false">@implementation&nbsp;MRCLoginViewController
+
+-&nbsp;(void)bindViewModel&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;bindViewModel];
+
+&nbsp;&nbsp;&nbsp;&nbsp;@weakify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;[RACObserve(self.viewModel,&nbsp;avatarURL)&nbsp;subscribeNext:^(NSURL&nbsp;*avatarURL)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.avatarButton&nbsp;sd_setImageWithURL:avatarURL&nbsp;forState:UIControlStateNormal&nbsp;placeholderImage:[UIImage&nbsp;imageNamed:@"default-avatar"]];
+&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.viewModel,&nbsp;username)&nbsp;&nbsp;=&nbsp;self.usernameTextField.rac_textSignal;
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.viewModel,&nbsp;password)&nbsp;&nbsp;=&nbsp;self.passwordTextField.rac_textSignal;
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.loginButton,&nbsp;enabled)&nbsp;=&nbsp;self.viewModel.validLoginSignal;
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[self.loginButton
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForControlEvents:UIControlEventTouchUpInside]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(id&nbsp;x)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.viewModel.loginCommand&nbsp;execute:nil];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+
+&nbsp;&nbsp;&nbsp;&nbsp;[[self.browserLoginButton
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForControlEvents:UIControlEventTouchUpInside]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(id&nbsp;x)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*message&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"“%@”&nbsp;wants&nbsp;to&nbsp;open&nbsp;“Safari”",&nbsp;MRC_APP_NAME];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIAlertController&nbsp;*alertController&nbsp;=&nbsp;[UIAlertController&nbsp;alertControllerWithTitle:nil
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message:message
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preferredStyle:UIAlertControllerStyleAlert];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[alertController&nbsp;addAction:[UIAlertAction&nbsp;actionWithTitle:@"Cancel"&nbsp;style:UIAlertActionStyleCancel&nbsp;handler:NULL]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[alertController&nbsp;addAction:[UIAlertAction&nbsp;actionWithTitle:@"Open"&nbsp;style:UIAlertActionStyleDefault&nbsp;handler:^(UIAlertAction&nbsp;*action)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.viewModel.browserLoginCommand&nbsp;execute:nil];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]];
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;presentViewController:alertController&nbsp;animated:YES&nbsp;completion:NULL];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+}
+
+@end</pre><ul class=" list-paddingleft-2" ><li><p>当用户输入的用户名发生变化时，调用 model 层的方法查询本地数据库中缓存的用户数据，并返回 avatarURL 属性;</p></li><li><p>当用户输入的用户名或密码发生变化时，判断用户名和密码的长度是否均大于 0 ，如果是则登录按钮可用，否则不可用;</p></li><li><p>当 loginCommand 或 browserLoginCommand 命令执行成功时，调用 doNext 代码块，使用服务总线中的方法 resetRootViewModel: 进入首页。</p></li></ul><p>接下来，我们来看看 MRCLoginViewController 中的部分关键代码：</p><pre class="brush:js;toolbar:false">@implementation&nbsp;MRCLoginViewController
+9
+-&nbsp;(void)bindViewModel&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[super&nbsp;bindViewModel];
+9
+&nbsp;&nbsp;&nbsp;&nbsp;@weakify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;[RACObserve(self.viewModel,&nbsp;avatarURL)&nbsp;subscribeNext:^(NSURL&nbsp;*avatarURL)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.avatarButton&nbsp;sd_setImageWithURL:avatarURL&nbsp;forState:UIControlStateNormal&nbsp;placeholderImage:[UIImage&nbsp;imageNamed:@"default-avatar"]];
+&nbsp;&nbsp;&nbsp;&nbsp;}];
+9
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.viewModel,&nbsp;username)&nbsp;&nbsp;=&nbsp;self.usernameTextField.rac_textSignal;
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.viewModel,&nbsp;password)&nbsp;&nbsp;=&nbsp;self.passwordTextField.rac_textSignal;
+&nbsp;&nbsp;&nbsp;&nbsp;RAC(self.loginButton,&nbsp;enabled)&nbsp;=&nbsp;self.viewModel.validLoginSignal;
+9
+&nbsp;&nbsp;&nbsp;&nbsp;[[self.loginButton
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForControlEvents:UIControlEventTouchUpInside]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(id&nbsp;x)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.viewModel.loginCommand&nbsp;execute:nil];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+9
+&nbsp;&nbsp;&nbsp;&nbsp;[[self.browserLoginButton
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rac_signalForControlEvents:UIControlEventTouchUpInside]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscribeNext:^(id&nbsp;x)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSString&nbsp;*message&nbsp;=&nbsp;[NSString&nbsp;stringWithFormat:@"“%@”&nbsp;wants&nbsp;to&nbsp;open&nbsp;“Safari”",&nbsp;MRC_APP_NAME];
+9
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UIAlertController&nbsp;*alertController&nbsp;=&nbsp;[UIAlertController&nbsp;alertControllerWithTitle:nil
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message:message
+9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preferredStyle:UIAlertControllerStyleAlert];
+9
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[alertController&nbsp;addAction:[UIAlertAction&nbsp;actionWithTitle:@"Cancel"&nbsp;style:UIAlertActionStyleCancel&nbsp;handler:NULL]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[alertController&nbsp;addAction:[UIAlertAction&nbsp;actionWithTitle:@"Open"&nbsp;style:UIAlertActionStyleDefault&nbsp;handler:^(UIAlertAction&nbsp;*action)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@strongify(self)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self.viewModel.browserLoginCommand&nbsp;execute:nil];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[self&nbsp;presentViewController:alertController&nbsp;animated:YES&nbsp;completion:NULL];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}];
+}
+9</pre><p>@end</p><ul class=" list-paddingleft-2" ><li><p>观察 viewModel 中 avatarURL 属性的变化，然后设置 avatarButton 中的图片；</p></li><li><p>将 viewModel 中的 username 和 password 属性分别与 usernameTextField 和 passwordTextField 输入框中的内容进行绑定；</p></li><li><p>将 loginButton 的 enabled 属性与 viewModel 的 validLoginSignal 属性进行绑定；</p></li><li><p>在 loginButton 和 browserLoginButton 按钮被点击时分别执行 loginCommand 和 browserLoginCommand 命令。</p></li></ul><p>综上所述，我们将 MRCLoginViewController 中的展示逻辑抽取到 MRCLoginViewModel 中后，使得 MRCLoginViewController 中的代码更加简洁和清晰。实践 MVVM 的关键点在于，我们要能够分析清楚 viewModel 需要暴露给 view 的数据和命令，这些数据和命令能够代表 view 当前的状态。</p><p><span style="font-size: 16px; color: rgb(0, 176, 80);"><strong>总结</strong></span></p><p>首先，我们从理论出发介绍了 MVC 和 MVVM 各自的概念以及从 MVC 到 MVVM 的演进过程；接着，介绍了 RAC 在 MVVM 中的两个使用场景；最后，我们从实践的角度，重点介绍了一个使用 MVVM 和 RAC 开发的开源项目 MVVMReactiveCocoa 。总的来说，我认为 iOS 中的 MVVM 可以分为以下三种不同的实践程度，它们分别对应不同的适用场景：</p><ul class=" list-paddingleft-2" ><li><p>MVVM + KVO ，适用于现有的 MVC 项目，想转换成 MVVM 但是不打算引入 RAC 作为 binder 的团队；</p></li><li><p>MVVM + RAC ，适用于现有的 MVC 项目，想转换成 MVVM 并且打算引入 RAC 作为 binder 的团队；</p></li><li><p>MVVM + RAC + ViewModel-Based Navigation ，适用于全新的项目，想实践 MVVM 并且打算引入 RAC 作为 binder ，然后也想实践 ViewModel-Based Navigation 的团队。</p></li></ul><p>写在最后，希望这篇文章能够打消你对 MVVM 模式的顾虑，赶快行动起来吧。</p><p><strong>参考链接</strong></p><ul class=" list-paddingleft-2" ><li><p><a href="https://www.objc.io/issues/13-architecture/mvvm/" target="_blank">https://www.objc.io/issues/13-architecture/mvvm/&nbsp;</a></p></li><li><p><a href="https://msdn.microsoft.com/en-us/library/hh848246.aspx" target="_blank">https://msdn.microsoft.com/en-us/library/hh848246.aspx</a>&nbsp;</p></li><li><p><a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel" target="_blank">https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel</a>&nbsp;</p></li><li><p><a href="https://medium.com/ios-os-x-development/ios-architecture-patterns-ecba4c38de52#.p6n56kyc4" target="_blank">https://medium.com/ios-os-x-development/ios-architecture-patterns-ecba4c38de52#.p6n56kyc4</a>&nbsp;</p></li><li><p><a href="http://cocoasamurai.blogspot.ru/2013/03/basic-mvvm-with-reactivecocoa.html" target="_blank">http://cocoasamurai.blogspot.ru/2013/03/basic-mvvm-with-reactivecocoa.html</a>&nbsp;</p></li><li><p><a href="http://www.sprynthesis.com/2014/12/06/reactivecocoa-mvvm-introduction/" target="_blank">http://www.sprynthesis.com/2014/12/06/reactivecocoa-mvvm-introduction/</a></p></li></ul>
+                </div>
+                <div id="page" style="padding:0"></div>
+
+                <div class="wx_article">
+                    <div class="article_weixin">
+                        <img src="http://cdn.cocimg.com/cms/templets/images/article_weixin.jpg" width="131" height="131" alt="搜索CocoaChina微信公众号：CocoaChina"/>
+                        <div class="article_scan">微信扫一扫</div>
+                        <div class="article_txt" ><span style="color:#999999">订阅每日移动开发及APP推广热点资讯<br/>公众号：</span>CocoaChina</div>
+                    </div>
+                </div>
+
+               <div class="clearfix tgbox">
+                    <a href="http://www.cocoachina.com/deliver.php" class="tg float-l" target="_blank">我要投稿</a>&nbsp;&nbsp;
+                    <a style="margin-left:10px"  href="javascript:void(0)" onClick="add_favors(15823,'MVVM With ReactiveCocoa')" class="tg float-l" >收藏文章</a>
+                    <div class="share float-r">分享到：
+                        <div class="bdsharebuttonbox" id="sharediv"><a href="#" class="bds_more" data-cmd="more"></a> <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a> <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+                    </div>
+                </div>
+
+
+                <a class="zanbox" href="javascript:void(0)" id="zanbox" onClick="postDigg('good',15823)" title="哎呦，不错噢，赞一个" >
+                    <strong id="newdigg">
+                     <script src="/cms/plus/count.php?view=yes&digg_id=15823&mid=17" language="javascript"></script>
+                    </strong>
+                </a>
+            </div>
+
+            <div class="article-prev">上一篇：<a href='/ios/20160325/15796.html'>源码推荐(03.25)：仿QQ弹出菜单， 响应式NavigationBar</a> </div>
+            <div class="article-next"></div>
+
+            <!--相关资讯-->
+            <div class="part-wrap clearfix">
+                <h3>相关资讯</h3>
+                <ul class="info-list clearfix">
+                    <li>
+                        <a href="/ios/20160308/15603.html" target="_blank" title="ReactiveCocoa登录交互效果的实现；可编辑可拖动排序cell的CollectionView；基于AVplayer的视频播放器">源码推荐(03.08)：ReactiveCocoa登录交互效果的实现，可编辑可拖动排序</a>
+                     </li>
+<li>
+                        <a href="/ios/20160225/15428.html" target="_blank" title="ReactiveCocoa (RAC) 是一个Cocoa框架，受Functional Reactive Programming启发。它提供API合成变换（composing and transforming）随着时间改变的数据流。">ReactiveCocoa 4 官方文档翻译</a>
+                     </li>
+<li>
+                        <a href="/ios/20160301/15425.html" target="_blank" title="MVVM的出现主要是为了解决在开发过程中Controller越来越庞大的问题，变得难以维护，所以MVVM把数据加工的任务从Controller中解放了出来，使得Controller只需要专注于数据调配的工作，ViewModel则去负责数据">总结整理下一个快速开发MVVM框架</a>
+                     </li>
+<li>
+                        <a href="/ios/20160216/15232.html" target="_blank" title="这是一个简化UITableView使用方式的一个尝试，不需要再实现UI TableView繁多的delegate和datasource方法，不需要重复实现繁多的cell的if else / switch 逻辑，只需要简单的配置过程，你就可以轻松的驾驭和布局T"> 一个基于MVVM的TableView组件化实现方案</a>
+                     </li>
+<li>
+                        <a href="/ios/20160125/15099.html" target="_blank" title="对比了iOS响应式编程中的两个主流框架ReactiveCocoa和RxSwift">响应式编程：ReactiveCocoa vs RxSwift</a>
+                     </li>
+<li>
+                        <a href="/ios/20160209/15047.html" target="_blank" title="之前做项目用到了ReactiveCocoa，当时只是知其然，不知所以然，很多都是根据用法示例找图画瓢。最近正好空闲下来，抽些时间理解ReactiveCocoa框架，整理一下之前的用法，以便朋友相互学习。">ReactiveCocoa 理解笔记</a>
+                     </li>
+<li>
+                        <a href="/ios/20160211/15020.html" target="_blank" title="ReactiveCocoa 是一个框架，它允许你在你的iOS程序中使用函数响应式（FRP）技术">ReactiveCocoa入门教程--第二部分</a>
+                     </li>
+<li>
+                        <a href="/ios/20160114/14995.html" target="_blank" title="这周我决定做一个关于彻底解耦合的应用架构的实验。我想探究的主题是：“如果所有的应用内通讯都通过一个事件流来完成会怎么样？”我构造了一个待办事项应用，因为这是我一时激动下所能想到">基于彻底解耦合的实验性iOS架构</a>
+                     </li>
+<li>
+                        <a href="/ios/20160112/14949.html" target="_blank" title="我认为MVVM 是一种非常容易让人混淆的anti-pattern(反面模式设计）。View models是很糟糕的名字，它只是优秀架构之路上的权宜之计。我们的团体将从这种模式过度到更好的模式。">MVVM没你想象的那么的好</a>
+                     </li>
+<li>
+                        <a href="/ios/20160108/14916.html" target="_blank" title="本文将带领大家简要地回顾一些流行的架构，并且在理论和实践上对它们进行比较，通过一些小的例子深化你的认知。如果对文中提到的一些关键词有兴趣，可以点击连接去查看更详细的内容。">iOS 架构模式--解密 MVC，MVP，MVVM以及VIPER架构</a>
+                     </li>
+
+                </ul>
+            </div>
+            <div class="clearfix" style="margin-top:20px;" >
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- CC评论框 -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:750px;height:90px"
+                     data-ad-client="ca-pub-1180518835303646"
+                     data-ad-slot="8242010366"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            <!-- 评论模块start -->
+            
+            <div class="clearfix" id="commnet_list_holder" style="margin-bottom:50px;">
+                <div class="glab-comment-form">
+                    <div class="dcbt">我来说两句</div>
+                    <div class="user-head">
+                        <img id="user_face_url" src="http://cdn.cocimg.com/bbs/images/face/none.gif" height="43" width="43" alt="">
+                    </div>
+                    <div class="form-region">
+                        <textarea name="comment" id="main_comment_content" cols="30" rows="10" placeholder="你怎么看？快来评论一下吧！"></textarea>
+                        <a class="submitform" id="main_comment_bt">发表评论</a>
+                        <div class="unlogin-mask">
+                            <div>您还没有登录！请<a href="/bbs/login.php">登录</a>或<a href="/bbs/register.php">注册</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="glab-comment-callback-msg" class="glab-comment-info"></div>
+                <div class="glab-comment-title">所有评论（<span>0</span>）</div>
+                <div class="glab-commentlist" id="commentlist">
+                    <a id="refresh_comment_btn" href="javascript:;" onclick="$('#morecomment').trigger('click')">刷新评论</a>
+                </div>
+                <div class="glab-comment-more" id="morecomment" style="display:none">
+                    更多评论
+                </div>
+            </div>
+            
+            <!-- 评论模块end -->
+
+
+        </div>
+        <!--./left-->
+        <!--侧边栏-->
+        <div class="clearfix newslist">
+            <div class="rightSide detail-right float-r"  >
+                <!--两周热门资讯推荐-->
+                <div>
+                    <div class="part-wrap clearfix">
+                        <h3>热门资讯</h3>
+                        <ul class="related-hot">
+                            <li class="clearfix"><a href="http://www.cocoachina.com/ios/20160317/15696.html" class="float-l pic" target="_blank" title="你真的了解iOS代理设计模式吗？"><img src="http://cc.cocimg.com/api/uploads/160316/6658712eef991034426688f1a6b45d3a.jpg"  style="max-height:60px" alt="你真的了解iOS代理设计模式吗？"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160317/15696.html" target="_blank" title="你真的了解iOS代理设计模式吗？">你真的了解iOS代理设计模式吗？</a></p><p class="hits">点击量<span>29150</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160316/15685.html" class="float-l pic" target="_blank" title="在写一个iOS应用之前必须做的7件事(附相关资源)"><img src="http://cc.cocimg.com/api/uploads/160315/d98ffa218f74d447c24a791359b1df96.jpg"  style="max-height:60px" alt="在写一个iOS应用之前必须做的7件事(附相关资源)"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160316/15685.html" target="_blank" title="在写一个iOS应用之前必须做的7件事(附相关资源)">在写一个iOS应用之前必须做的7件事(附相关资源)</a></p><p class="hits">点击量<span>12336</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160329/15803.html" class="float-l pic" target="_blank" title="我是如何检测内存泄露的"><img src="http://cc.cocimg.com/api/uploads/160328/403dd0ff234e9a3526de653fede9e0ee.jpg"  style="max-height:60px" alt="我是如何检测内存泄露的"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160329/15803.html" target="_blank" title="我是如何检测内存泄露的">我是如何检测内存泄露的</a></p><p class="hits">点击量<span>11903</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160323/15770.html" class="float-l pic" target="_blank" title="iOS面试必看，最全梳理"><img src="http://cc.cocimg.com/api/uploads/160322/e7f45a5c07f10421afc2af89a5803246.jpg"  style="max-height:60px" alt="iOS面试必看，最全梳理"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160323/15770.html" target="_blank" title="iOS面试必看，最全梳理">iOS面试必看，最全梳理</a></p><p class="hits">点击量<span>9400</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160324/15727.html" class="float-l pic" target="_blank" title="iOS开发编码建议与编程经验（持续更新中）"><img src="http://cc.cocimg.com/api/uploads/160318/e14c39277f17187e72a1c389a5ad3edb.jpg"  style="max-height:60px" alt="iOS开发编码建议与编程经验（持续更新中）"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160324/15727.html" target="_blank" title="iOS开发编码建议与编程经验（持续更新中）">iOS开发编码建议与编程经验（持续更新中）</a></p><p class="hits">点击量<span>8122</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/swift/20160318/15712.html" class="float-l pic" target="_blank" title="Hello，服务端 Swift"><img src="http://cc.cocimg.com/api/uploads/160317/b99fb8e7a2fc1f7d454db5aef116c188.jpg"  style="max-height:60px" alt="Hello，服务端 Swift"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/swift/20160318/15712.html" target="_blank" title="Hello，服务端 Swift">Hello，服务端 Swift</a></p><p class="hits">点击量<span>7793</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160321/15698.html" class="float-l pic" target="_blank" title="移动端地图技术分享"><img src="http://cc.cocimg.com/api/uploads/160316/b4fb9976075cd1893ab0efc17134ede8.jpg"  style="max-height:60px" alt="移动端地图技术分享"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160321/15698.html" target="_blank" title="移动端地图技术分享">移动端地图技术分享</a></p><p class="hits">点击量<span>7279</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160318/15716.html" class="float-l pic" target="_blank" title="iOS 9学习系列： ReplayKit框架入门"><img src="http://cc.cocimg.com/api/uploads/160317/f776e6c33d770b93fd8030cfba8dbfc5.jpg"  style="max-height:60px" alt="iOS 9学习系列： ReplayKit框架入门"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160318/15716.html" target="_blank" title="iOS 9学习系列： ReplayKit框架入门">iOS 9学习系列： ReplayKit框架入门</a></p><p class="hits">点击量<span>6804</span></p></div></li><li class="clearfix"><a href="http://www.cocoachina.com/ios/20160321/15726.html" class="float-l pic" target="_blank" title=" iOS开发调试技巧总结（持续更新中）"><img src="http://cc.cocimg.com/api/uploads/160318/e496f77dc6dec9e0b830512e002906dc.jpg"  style="max-height:60px" alt=" iOS开发调试技巧总结（持续更新中）"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160321/15726.html" target="_blank" title=" iOS开发调试技巧总结（持续更新中）"> iOS开发调试技巧总结（持续更新中）</a></p><p class="hits">点击量<span>6266</span></p></div></li><li class="clearfix noborder-b"><a href="http://www.cocoachina.com/ios/20160322/15766.html" class="float-l pic" target="_blank" title="苹果发布Xcode 7.3，Swift更新至2.2版本"><img src="http://cc.cocimg.com/api/uploads/160322/42dea27c3f5ddabb56257da9a693ea40.jpg"  style="max-height:60px" alt="苹果发布Xcode 7.3，Swift更新至2.2版本"/></a><div style="margin-left:86px"><p class="related-intro"><a href="http://www.cocoachina.com/ios/20160322/15766.html" target="_blank" title="苹果发布Xcode 7.3，Swift更新至2.2版本">苹果发布Xcode 7.3，Swift更新至2.2版本</a></p><p class="hits">点击量<span>5998</span></p></div></li>
+                        </ul>
+                    </div>
+               </div>
+               <!--./两周热门资讯推荐-->
+               <!--综合评论-->
+                <div class="part-wrap clearfix" style="margin-top: 15px;">
+                    <h3>综合评论</h3>
+                    <ul class="related-comment clearfix" id="all_comments_holder">
+                        <li><span class="hide_comment">点更新，点了几十次，搞了三天，都没启动下载过程！！一直是菊花转圈。。。</span><br/><p><span>givan_chou</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160322/15766.html" title="苹果发布Xcode 7.3，Swift更新至2.2..." target="_blank" ><span>苹果发布Xcode 7.3，Swift更新至2.2...</span></a></p></li><li><span class="hide_comment">目录里建那些文件夹不得累死你。。我就找本页面的model和view，你告诉我要点开多少层文件夹。。。。还不如一个tabbaritem一个文件夹呢。。</span><br/><p><span>zkfpk6</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160316/15685.html" title="在写一个iOS应用之前必须做的7件事(附相关资源)" target="_blank" ><span>在写一个iOS应用之前必须做的7件事(附相关资源)</span></a></p></li><li><span class="hide_comment">就该这么搞。。谁会闲的没事调到1970年。。</span><br/><p><span>zkfpk6</span><span>评论了</span><a href="http://www.cocoachina.com/apple/20160324/15786.html" title="iPhone时间BUG已修复 没想到苹果用了这一招" target="_blank" ><span>iPhone时间BUG已修复 没想到苹果用了这一招</span></a></p></li><li><span class="hide_comment">我就想让tableviewcell能有个自动计算高度的属性。。很难吗，安卓早就有的东西，玛德到ios还得先自己算一遍高度要死了，，我说的是不用xib的话</span><br/><p><span>zkfpk6</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160325/15790.html" title="作为开发者，你觉得Apple该如何改进开发者工具呢..." target="_blank" ><span>作为开发者，你觉得Apple该如何改进开发者工具呢...</span></a></p></li><li><span class="hide_comment">还是喜欢括号对齐，尽管周围的人都不对齐<br>但是感觉还是括号对齐瞅着舒服，层级关系一目了然</span><br/><p><span>zkfpk6</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160324/15727.html" title="iOS开发编码建议与编程经验（持续更新中）" target="_blank" ><span>iOS开发编码建议与编程经验（持续更新中）</span></a></p></li><li><span class="hide_comment">请问我走进了小学课堂了吗？</span><br/><p><span>528257097</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160329/15789.html" title="从C语言的变量声明到Objective-C中的Bl..." target="_blank" ><span>从C语言的变量声明到Objective-C中的Bl...</span></a></p></li><li><span class="hide_comment">mark</span><br/><p><span>1071199635</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160329/15783.html" title="开源代码：ZYThumbnailTableView..." target="_blank" ><span>开源代码：ZYThumbnailTableView...</span></a></p></li><li><span class="hide_comment">666，这是要我转行的节奏吗</span><br/><p><span>you8303</span><span>评论了</span><a href="http://www.cocoachina.com/programmer/20160215/15278.html" title="如果恨一个程序员，忽悠他去做iOS开发" target="_blank" ><span>如果恨一个程序员，忽悠他去做iOS开发</span></a></p></li><li><span class="hide_comment">楼主这图配的好</span><br/><p><span>1316lq</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20160329/15803.html" title="我是如何检测内存泄露的" target="_blank" ><span>我是如何检测内存泄露的</span></a></p></li><li class="noborder-b"><span class="hide_comment">第一个例子我有个疑问：为啥需要设置HuggingPriority直接把CompressionResistancePriority&nbsp;左边设置为高右边设置为低就可以达到想要的效果了，，，，就算不把HuggingPriority设置成1000Label的宽度也可以自动根据文字内容改变宽度啊，，，求解释</span><br/><p><span>cowboyfzl</span><span>评论了</span><a href="http://www.cocoachina.com/ios/20150527/11936.html" title="有趣的Autolayout示例-Masonry实现" target="_blank" ><span>有趣的Autolayout示例-Masonry实现</span></a></p></li>
+                    </ul>
+                </div>
+                <!--./综合评论-->
+                <!--相关帖子-->
+                <div class="part-wrap clearfix" style="margin:15px 0 15px 0;">
+                    <h3>相关帖子</h3>
+                    <ul class="related-comment clearfix">
+                        <script charset="gb2312" src="http://www.cocoachina.com/bbs/new.php?action=article&fidin=21_18_2_8_19_41_59_48_56_14_36_5&digest=0&postdate=0&author=0&fname=0&hits=0&replies=0&pre=0&num=10&length=100&order=2&like=ios#ReactiveCocoa"></script>
+                    </ul>
+                </div>
+                <!--./相关帖子-->
+                <iframe width="230" height="550" class="share_self" frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=230&height=550&fansRow=2&ptype=1&speed=0&skin=5&isTitle=1&noborder=1&isWeibo=1&isFans=0&uid=1659808677&verifier=6043be56&dpc=1"></iframe>
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- CC列表页面230x230 -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:230px;height:230px"
+                     data-ad-client="ca-pub-1180518835303646"
+                     data-ad-slot="6765277166"></ins>
+                <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+        </div>
+        <!--./侧边栏-->
+    </div>
+
+    <div id="coco-store" style="display:none">
+        <div class="storebox">
+            <h5>提示</h5>
+            <h3>已经收藏该篇文章</h3>
+            <p class="p1"><a href="/bbs/u.php?action=favor&tag=1" target="_blank">去我的收藏夹</a></p>
+            <p class="p2"><a href="/bbs/login.php">请登录</a></p>
+        </div>
+    </div> <!--收藏提示-->
+</div>
+
+<script type="text/javascript">
+
+function postDigg(ftype,aid)
+{
+    var taget_obj = document.getElementById('newdigg');
+    var saveid = GetCookie('diggid');
+    if(saveid != null)
+    {
+        var saveids = saveid.split(',');
+        var hasid = false;
+        saveid = '';
+        j = 1;
+        for(i=saveids.length-1;i>=0;i--)
+        {
+            if(saveids[i]==aid && hasid) continue;
+            else {
+                if(saveids[i]==aid && !hasid) hasid = true;
+                saveid += (saveid=='' ? saveids[i] : ','+saveids[i]);
+                j++;
+                if(j==20 && hasid) break;
+                if(j==19 && !hasid) break;
+            }
+        }
+        if(hasid) { alert("您已经顶过该帖，请不要重复顶帖 ！"); return; }
+        else saveid += ','+aid;
+        SetCookie('diggid',saveid,1);
+    }
+    else
+    {
+        SetCookie('diggid',aid,1);
+    }
+    myajax = new DedeAjax(taget_obj,false,false,'','','');
+    var url = "/cms/plus/digg_ajax.php?action="+ftype+"&id="+aid;
+    myajax.SendGet2(url);
+    DedeXHTTP = null;
+    $('#zanbox').addClass('zanbox-selected');
+}
+function getDigg(aid)
+{
+    var taget_obj = document.getElementById('newdigg');
+    myajax = new DedeAjax(taget_obj,false,false,'','','');
+    myajax.SendGet2("/cms/plus/digg_ajax.php?id="+aid);
+    DedeXHTTP = null;
+}
+
+
+//显示对应的导航：
+$(function(){
+    var article_id = $('#article_id').val();
+    var saveid = GetCookie('diggid');
+
+    if(saveid != null)
+    {
+        var saveids = saveid.split(',');
+        var hasid = false;
+        saveid = '';
+        j = 1;
+        for(i=saveids.length-1;i>=0;i--)
+        {
+            if(saveids[i]==article_id && hasid) continue;
+            else {
+                if(saveids[i]==article_id && !hasid) hasid = true;
+                saveid += (saveid=='' ? saveids[i] : ','+saveids[i]);
+                j++;
+                if(j==20 && hasid) break;
+                if(j==19 && !hasid) break;
+            }
+        }
+
+        if(hasid)
+        {
+            $('#zanbox').addClass('zanbox-selected');
+        }
+
+    }
+
+});
+
+window.onload = function() {
+
+    $('#sharediv').removeClass('bdshare-button-style1-32');
+    $('#sharediv').attr('class','bdsharebuttonbox');
+};
+</script>
+<script type="text/javascript" src="http://cdn.cocimg.com/cms/templets/js/shCore.js"></script>
+    <script type="text/javascript" src="http://cdn.cocimg.com/cms/templets/js/brush.js"></script>
+    <link type="text/css" rel="stylesheet" href="http://cdn.cocimg.com/cms/templets/style/shCoreDefault.css"/>
+    <script type="text/javascript">
+    //SyntaxHighlighter.config.clipboardSwf = '/js/scripts/clipboard.swf';
+
+    SyntaxHighlighter.all();</script>
+
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"MVVM With ReactiveCocoa - 来自CocoaChina苹果开发中文站@CocoaChina","bdMini":"2","bdMiniList":false,"bdPic":"http://api.cocoachina.com/uploads/160329/b5ac95bf556474a9788d6a2dca5680e0.jpg","bdStyle":"1","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api//js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+<!--./cont-->
+
+<!-- 回复评论框模板 -->
+<script type="text/javascript" src="http://cdn.cocimg.com/cms/templets/js/comment.js?v=20151019"></script>
+<script type="text/javascript" src="http://cdn.cocimg.com/cms/templets/js/mustache.min.js"></script>
+<!-- 回复评论框模板 -->
+<script id="reply_comment_template" type="x-tmpl-mustache">
+    <div id="sub-reply-comment" class="reply-comment">
+        <textarea name="subcomment" id="sub-reply-txt" cols="30" rows="10" placeholder="你怎么看？快来评论一下吧！"></textarea>
+        <input type="hidden" id="sub-reply-id" value="{{commentid}}" />
+        <input type="hidden" id="sub-reply-userid" value="{{parentuserid}}" />
+        <input type="hidden" id="sub-reply-username" value="{{parentusername}}" />
+        <a type="button" id="sub_comment_bt" class="submitbt">提交</a>
+        <div class="clearfloat"></div>
+        <div class="unlogin-mask">
+            <div>您还没有登录！请<a href="/bbs/login.php">登录</a>或<a href="/bbs/register.php">注册</a></div>
+        </div>
+    </div>
+</script>
+
+<!-- 评论模板 -->
+<script id="main_comment_template" type="x-tmpl-mustache">
+    <div class="glab-comment" rel-data-id="{{comment_id}}" rel-user-id="{{user_id}}" rel-user-name="{{user_name}}" rel-layer="1">
+        <div class="comment-left">
+            <a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank"><img src="{{user_icon_url}}" height="43" width="43" alt=""></a>
+        </div>
+        <div class="comment-right">
+            <div class="comment-author"><a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank">{{user_name}}</a><span class="puptime">{{create_time}}</span></div>
+            <div class="comment-content">{{&content}}</div>
+            <div class="comment-buttons">
+                <span class="ding">                    
+                    <img src="http://cdn.cocimg.com/cms/templets/images/zan-default.png" height="14" width="14" alt="" class="default" style="{{#has_supported}} display:none; {{/has_supported}}">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/zan-active.png" height="14" width="14" alt="" class="actived" style="{{^has_supported}} display:none; {{/has_supported}}">
+                    <span class="zancnt">{{support}}</span>
+                </span>
+                <span class="cai">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/cai-default.png" height="14" width="14" alt="" class="default" style="{{#has_reported}} display:none; {{/has_reported}}">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/cai-active.png" height="14" width="14" alt="" class="actived" style="{{^has_reported}} display:none; {{/has_reported}}">
+                    <span class="zancnt">{{report}}</span>
+                </span>
+                <span class="replybt">回复</span>
+            </div>
+        </div>
+            {{#sub}}
+                <div class="glab-comment glab-sub-comment" rel-data-id="{{comment_id}}" rel-user-id="{{user_id}}" rel-user-name="{{user_name}}" rel-layer="2">
+                    <div class="comment-left">
+                        <a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank"><img src="{{user_icon_url}}" height="43" width="43" alt=""></a>
+                    </div>
+                    <div class="comment-right">
+                        <div class="comment-author"><a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank">{{user_name}}</a><span class="puptime">{{create_time}}</span></div>
+                        <div class="comment-content"><a href="/bbs/u.php?action=feed&uid={{parent_user_id}}" target="_blank">回复：{{parent}}</a>{{&content}}</div>
+                        <div class="comment-buttons">
+                            <span class="ding">
+                                <img src="http://cdn.cocimg.com/cms/templets/images/zan-default.png" height="14" width="14" alt="" class="default" style="{{#has_supported}} display:none; {{/has_supported}}">
+                                <img src="http://cdn.cocimg.com/cms/templets/images/zan-active.png" height="14" width="14" alt="" class="actived" style="{{^has_supported}} display:none; {{/has_supported}}">
+                                <span class="zancnt">{{support}}</span>
+                            </span>
+                            <span class="cai">
+                                <img src="http://cdn.cocimg.com/cms/templets/images/cai-default.png" height="14" width="14" alt="" class="default" style="{{#has_reported}} display:none; {{/has_reported}}">
+                                <img src="http://cdn.cocimg.com/cms/templets/images/cai-active.png" height="14" width="14" alt="" class="actived" style="{{^has_reported}} display:none; {{/has_reported}}">
+                                <span class="zancnt">{{report}}</span>
+                            </span>
+                            <span class="replybt">回复</span>
+                        </div>          
+                    </div>
+                </div>
+            {{/sub}}         
+    </div>  
+</script>
+
+
+<script id="sub_comment_template" type="x-tmpl-mustache">
+    <div class="glab-comment glab-sub-comment" rel-data-id="{{comment_id}}" rel-user-id="{{user_id}}" rel-user-name="{{user_name}}" rel-layer="2">
+        <div class="comment-left">
+            <a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank"><img src="{{user_icon_url}}" height="43" width="43" alt=""></a>
+        </div>
+        <div class="comment-right">
+            <div class="comment-author"><a href="/bbs/u.php?action=feed&uid={{user_id}}" target="_blank">{{user_name}}</a><span class="puptime">{{create_time}}</span></div>
+            <div class="comment-content"><a href="/bbs/u.php?action=feed&uid={{parent_user_id}}" target="_blank">回复：{{parent}}</a>{{&content}}</div>
+            <div class="comment-buttons">
+                <span class="ding">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/zan-default.png" height="14" width="14" alt="" class="default" style="{{#has_supported}} display:none; {{/has_supported}}">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/zan-active.png" height="14" width="14" alt="" class="actived" style="{{^has_supported}} display:none; {{/has_supported}}">
+                    <span class="zancnt">{{support}}</span>
+                </span>
+                <span class="cai">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/cai-default.png" height="14" width="14" alt="" class="default" style="{{#has_reported}} display:none; {{/has_reported}}">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/cai-active.png" height="14" width="14" alt="" class="actived" style="{{^has_reported}} display:none; {{/has_reported}}">
+                    <span class="zancnt">{{report}}</span>
+                </span>
+                <span class="replybt">回复</span>
+            </div>          
+        </div>
+    </div>
+</script>
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-68948817-1', 'auto', {'name': 'newTracker'});
+  ga('newTracker.send', 'pageview');
+
+</script>
+</div>    
+<!--右侧浮动-->
+    <div class="r-bar">
+        <img src="http://cdn.cocimg.com/cms/templets/images/coco_weixin.png" class="weixin">
+    	<a href="http://weibo.com/cocoachina" target="_blank" title="" class="weibo">sina</a>
+        <a href="javascript:void(0);" target="_blank" title="" class="feedback">weixin</a>
+        <a href="mailto:support@cocoachina.com" title="" class="kefu">mail</a>
+        <a href="javascript:;" title="回到顶部" class="returntop">回到顶部</a>
+    </div>
+
+<script language="javascript" src="/cms/bbsauth_plus2015.php" type="text/javascript"></script>
+<script type="text/javascript">
+$(function(){
+    if (typeof(_user_info_html) != 'undefined' && _user_info_html)
+    {
+        $('.nav-user-login').hide();
+        $('.nav-user-name').html(_user_info_html).show();
+    }
+
+	var type = $('#type_name').html();
+	if(type)
+	{	
+		switch( type )
+		{
+			case 'iOS开发':
+				$('#ios').addClass('light');
+				break;
+			case 'AppStore研究':
+				$('#app_store').addClass('light');
+				break;
+			case 'Mac开发':
+				$('#mac').addClass('light');
+				break;
+			case '产品设计':
+				$('#design').addClass('light');
+				break;
+			case 'Cocos引擎':
+				$('#cocos').addClass('light');
+				break;
+			case 'WebApp':
+				$('#webapp').addClass('light');
+				break;
+			case 'Swift':
+				$('#swift').addClass('light');
+				break;
+			case '游戏开发':
+				$('#game').addClass('light');
+				break;
+			case '苹果相关':
+				$('#apple').addClass('light');
+				break;
+			case '营销推广':
+				$('#market').addClass('light');
+				break;		
+			case '业界动态':
+				$('#industry').addClass('light');
+				break;	
+			case '程序人生':
+				$('#programmer').addClass('light');
+				break;																																
+				
+		}
+	}
+});
+</script>
+<!--./cont-->
+<script type="text/javascript" src="/cms/templets/js/index.js?20111546514"></script>
+<script src="http://cdn.cocimg.com/cms/templets/js/jquery.colorbox-min.js" type="text/javascript"></script>
+<script language="javascript" src="/cms/bbsauth_new2015.php"  type="text/javascript"></script>
+<script src="/cms/templets/js/script.js?t=2045479411" type="text/javascript"></script>
+<script type="text/javascript">
+			jQuery(function()
+			{
+				//更改文章来源
+				var source = $('#source a').html();								
+				if( source == '未知' )
+					jQuery('#source a').html('CocoaChina');
+				if( jQuery('#source a').attr('href')=='')
+					jQuery('#source').html('来源：'+source);
+				
+				//获取用户登录的id
+//                var content = jQuery('.t-lid').attr("href");
+//                var uid = 0;
+//                if( content )
+//                {
+//                    content = content.split('=');
+//                    uid = content[1];
+//                }
+//                var timestamp = new Date().getTime();	
+//                var uid2 = parseInt(uid);
+//                if(uid2==uid && uid2!=0){
+//                    uid = uid<<2;			
+//                    uid = uid+''+timestamp;
+//                }else{
+//                    uid = "";
+//                }
+//                var oIframe=document.getElementById("comiframe");
+//                if(oIframe){
+//                    var oUrl=window.location.href;
+//                    oUrl = encodeURIComponent(oUrl);
+//
+//                    oIframe.src="/comment.php?url="+oUrl+"&uid="+uid;
+//                }
+
+				
+			});
+		</script>
+<!--footer-->
+<div class="footer clearfix">
+    <div class="footer-b">
+        <div>
+            <a href="/aboutus/index.html" target="_blank">关于我们</a>
+            <a href="/contactus/index.html" target="_blank">商务合作</a>
+            <a href="mailto:support@cocoachina.com" target="_blank">联系我们</a>
+            <a href="/corps" target="_blank">合作伙伴</a>
+        </div>
+        <p class="footer-b-p">北京触控科技有限公司版权所有</p>
+        <p>
+            &copy;2016 Chukong Technologies,Inc.
+            <i>
+                <a href="http://www.miibeian.gov.cn/" target="_blank">京ICP备 11006519号 　京ICP证 100954号</a> 京公网安备11010502020289 
+                <a href="http://182.131.21.137/ccnt-apply/admin/business/preview/business-preview!lookUrlRFID.action?main_id=A580B24B1AE846CE9DA949026D63939F" target="_blank">
+                    <img src="http://cdn.cocimg.com/cms/templets/images/jingwen.png" style="margin: -10px auto -14px -10px;" />
+                    京网文[2012]0426-138号
+                </a>
+            </i>
+        </p>
+    </div>
+</div>
+<!--./footer-->
+<script language="javascript" type="text/javascript" src="/cms/include/dedeajax2-min.js"></script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?88399e4c4cf744609c4fc8c3a8935691";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-16940817-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  
+ 
+function search_check()
+{
+	var search_keyword = $('#search_keyword').val();
+
+	if( search_keyword.length < 2 )
+	{
+		alert("搜索关键字不能少于2个字节，请重新输入。");
+	}
+	else
+	{
+		$('#searchform').submit();
+	}
+}
+
+</script>
+<script type="text/javascript">
+_acK({aid:116313,format:0,mode:1,gid:1,serverbaseurl:"afp.csbew.com/"});
+</script>
+
+</body>
+</html>

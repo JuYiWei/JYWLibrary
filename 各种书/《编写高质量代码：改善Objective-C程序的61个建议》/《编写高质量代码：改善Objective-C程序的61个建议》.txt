@@ -1,0 +1,59 @@
+http://download.csdn.net/detail/u013059266/9470077
+
+
+1 OC 动态语言 - runtime 运行时机制
+
+2 头文件尽量2不出现#import，而使用@class代替，源文件使用#import
+
+3 #define 、const 、NS_ENUM、NS_OPTIONS 的选择使用，尽量少用#define，使用其他几个替代。
+
+4 使用对象字面量的快速创建语法：NSString、NSNumber、NSArray、NSDictionary
+NSString：@“”;
+NSNumber：@1、@1.1、@1.2f、@YES
+NSArray：@[a,b,c]; 注意不要有nil对象 == array[2]
+NSDictionary：@{key1:value1,key2:value2}; == dictionary[key1]
+
+NSMutableArray [@[a,b,c] mutableCopy];
+NSMutableDictionary：[@{key1:value1,key2:value2} mutableCopy]; == dictionary[key1]
+
+5 优先使用 实例类型 instancetype 代替 id。
+
+6 使用modules 现在新建项目一般是开启的，build setting 中有设置。推荐使用@inport 替换#import （虽然#import 编译器会隐式的转换成@inport）
+
+7 C++与 OC 混编：不能相互继承，对象模型不兼容，保留字段，互相增加功能（这一条待补充...）
+
+8 C 与 OC 关系：C 的基本数据类型都能使用，但是OC 有自己的数据类型，（计算时用 C 更简洁，但是还是用OC 的把）
+
+9 空指针 与 野指针：
+没有存储任何内存地址的指针、可以对其操作，发送消息。例如 UIView *tempView = nil;
+指向“垃圾”内存(不可用内存，已释放)的指针。禁止发送消息，会崩溃。ARC 之后我们关心的比较少。
+
+10 标记指针：64位处理速度更快而已。实际使用并没有什么区别。
+
+
+11 注意数据类型，不要相互混乱。
+
+12 常量字符串 与 一般字符串：相同的常量字符串指向同一个地址，一般字符串通过常量字符串初始化时也会指向同一个地址。（很少研究）
+
+13 快速枚举 for (id obj in array){}   while (obj == obj2){}  但是现在有block 遍历
+
+14 NSArray 有序数组，NSSet 无序集合，快速枚举比较快，不能存储基本数据类型，必须是对象。
+
+15 字典的key，最好使用 字符串。
+
+16 禁止 BOOL 与 YES/NO 比较。推荐简单的三元操作。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
